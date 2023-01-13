@@ -4,92 +4,86 @@ export default class Obstacles {
     canMoveRight = false;
     playerIsRunning = false;
 
-    constructor(ctx) {
-        this.ctx = ctx;
+    constructor(context) {
+        this.context = context;
         this.x = 0;
         this.y = 0;
-        this.width = ctx.canvas.width;
-        this.height = ctx.canvas.height;
+        this.width = context.canvas.width;
+        this.height = context.canvas.height;
 
         this.obstacles.push(
-            new Obstacle(this.ctx),
-            new Obstacle(this.ctx),
-            new Obstacle(this.ctx),
-            new Obstacle(this.ctx),
-            new Obstacle(this.ctx),
-            new Obstacle(this.ctx),
+            new Obstacle(this.context),
+            new Obstacle(this.context),
+            new Obstacle(this.context),
+            new Obstacle(this.context),
+            new Obstacle(this.context),
+            new Obstacle(this.context),
         );
-    }
 
-    setSpeed(selectedDifficulty) {
-        this.obstacles.forEach(obstacle => obstacle.setSpeed(selectedDifficulty));
-    }
-
-    reset() {
-        this.obstacles.forEach(obstacle => obstacle.reset());
+        this.setSpeed();
     }
 
     draw() {
         for (const obstacle of this.obstacles) {
             obstacle.draw();
 
-            this.canMoveLeft && obstacle.moveLeft();
-            this.canMoveRight && obstacle.moveRight(this.playerIsRunning);
+            this.canMoveLeft && obstacle.moveLeft(this.playerIsRunning);
+            this.canMoveRight && obstacle.moveRight();
 
-            if (obstacle.outOfBounds()) obstacle.reset();
+            obstacle.outOfBounds() && obstacle.reset();
         }
+    }
+
+    setSpeed(selectedDifficulty = "easy") {
+        this.obstacles.forEach(obstacle => obstacle.setSpeed(selectedDifficulty));
+    }
+
+    reset() {
+        this.obstacles.forEach(obstacle => obstacle.reset());
     }
 }
 
 class Obstacle {
-    defaultSpeeds = [6, 8, 10];
-    speeds = this.defaultSpeeds;
-    scored = false;
+    speed = 0;
+    width = 70;
+    height = 30;
 
-    constructor(ctx) {
-        this.ctx = ctx;
+    constructor(context) {
+        this.context = context;
 
-        this.x = ctx.canvas.width;
-        this.y = ctx.canvas.height - 57;
-        this.width = 50;
-        this.height = 30;
+        this.x = context.canvas.width;
+        this.y = context.canvas.height - 35;
     }
 
     setSpeed(selectedDifficulty) {
         const difficultySpeeds = {
-            easy: this.defaultSpeeds,
-            medium: this.defaultSpeeds.map(speed => speed + 2),
-            hard: this.defaultSpeeds.map(speed => speed + 4),
+            easy: 5,
+            medium: 10,
+            hard: 15
         };
 
-        this.speeds = difficultySpeeds[selectedDifficulty] ?? this.defaultSpeeds;
+        this.speed = difficultySpeeds[selectedDifficulty];
     }
 
     draw() {
-        this.ctx.fillStyle = "#ccc";
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
-
-        this.ctx.strokeStyle = "#000";
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(this.x, this.y, this.width, this.height);
+        this.context.font = "50px Arial";
+        this.context.fillText("🌵", this.x, this.y);
     }
 
-    moveLeft() {
-        const randomNumber = Math.floor(Math.random() * this.speeds.length);
-        this.x -= this.speeds[randomNumber];
+    moveLeft(playerIsRunning) {
+        this.x -= this.speed + (playerIsRunning ? 5 : 0);
     }
 
-    moveRight(playerIsRunning) {
-        const randomNumber = Math.floor(Math.random() * this.speeds.length);
-
-        if (playerIsRunning) return this.x += this.speeds[randomNumber] * 2;
-        this.x += this.speeds[randomNumber];
+    moveRight() {
+        this.x += this.speed;
     }
 
     reset() {
-        let randomIndex = Math.floor(Math.random() * 10);
-        this.x = this.ctx.canvas.width + randomIndex * 1000;
+        let randomNumber = Math.floor(Math.random() * 1000);
+        this.x = this.context.canvas.width + randomNumber * 15;
     }
 
-    outOfBounds() { return this.x + this.width < 0; }
+    outOfBounds() {
+        return this.x + this.width < 0;
+    }
 }

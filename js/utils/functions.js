@@ -1,15 +1,22 @@
-function img(file, src) {
+import colors from "../game/colors.js";
+
+export function img(file, src) {
   const image = new Image();
 
   image.src = `images/${src}/${file}`;
   return image;
 }
 
-function writeText(ctx, options, text, position) {
-  ctx.fillStyle = options.color ?? "#fff";
-  ctx.font = options.font ?? "16px Arial";
-  ctx.textAlign = options.align ?? "center";
-  ctx.fillText(text, position.x, position.y);
-}
+export function writeTextOnCanvas(context, text, position, options = null) {
+  if (!options) options = {};
 
-export { img, writeText };
+  context.fillStyle = options.color ?? colors.normalFont;
+  context.font = options.font ?? "16px Arial";
+  context.textAlign = options.align ?? "center";
+  context.fillText(text, position.x, position.y);
+
+  if (!options.border) return;
+  context.strokeStyle = colors.black;
+  context.lineWidth = 0.5;
+  context.strokeText(text, position.x, position.y);
+}

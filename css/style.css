@@ -14,15 +14,6 @@
     font-family: 'Roboto', sans-serif;
 }
 
-a {
-    color: #ccc;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 body {
     background-color: var(--bg-color);
     display: grid;
@@ -50,16 +41,47 @@ canvas {
     height: 100%;
 }
 
-.modal {
-    display: none;
+.modal,
+.loader {
     justify-content: center;
     align-items: center;
+}
+
+.modal {
+    display: none;
     flex-direction: column;
     padding: 20px;
+    z-index: 95;
+}
+
+.loader {
+    display: flex;
+    pointer-events: none;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    transition: opacity .3s ease;
+}
+
+.loader .img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.img img {
+    width: 20%;
+    padding-left: 50px;
 }
 
 .modal.active {
     display: flex;
+}
+
+.loader.inactive {
+    opacity: 0;
 }
 
 .table-container {

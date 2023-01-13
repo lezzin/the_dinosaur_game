@@ -1,4 +1,5 @@
 import { img } from "../utils/functions.js";
+import colors from "./colors.js";
 
 export default class Scenaries {
     cloudCanMoveRight = false;
@@ -25,10 +26,10 @@ export default class Scenaries {
 
     draw() {
         // ground
-        this.ctx.fillStyle = "#1aa12c";
+        this.ctx.fillStyle = colors.ground;
         this.ctx.fillRect(0, this.ctx.canvas.height - 25.5, this.ctx.canvas.width, 26);
-        // line on the ground
-        this.ctx.strokeStyle = "#166b21";
+        // overline on ground
+        this.ctx.strokeStyle = colors.darkGround;
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
         this.ctx.moveTo(0, this.ctx.canvas.height - 25.5);
@@ -39,10 +40,11 @@ export default class Scenaries {
         for (const cloud of this.clouds) {
             cloud.draw();
 
-            if (this.cloudCanMoveRight) cloud.moveRight(this.playerIsRunning);
-            if (this.cloudCanMoveLeft) cloud.moveLeft();
+            this.cloudCanMoveRight && cloud.moveRight();
+            this.cloudCanMoveLeft && cloud.moveLeft(this.playerIsRunning);
 
-            (cloud.x + cloud.width < 0) && cloud.reset();
+            const cloudPassedCanvasRightBorder = cloud.x + cloud.width < 0;
+            cloudPassedCanvasRightBorder && cloud.reset();
         }
     }
 
@@ -55,8 +57,8 @@ class Cloud {
     constructor(ctx, image) {
         this.ctx = ctx;
         this.x = Math.floor(Math.random() * 1000) + ctx.canvas.width;
-        this.y = Math.floor(Math.random() * 100) + 50;
-        this.width = Math.floor(Math.random() * 300) + 100;
+        this.y = Math.floor(Math.random() * 250);
+        this.width = Math.floor(Math.random() * 400);
         this.height = this.width / 2 + 30;
 
         this.image = image;
@@ -69,14 +71,22 @@ class Cloud {
         (this.x + this.width < 0) && this.reset();
     }
 
-    move() { this.x -= 0.5; }
-    moveRight(playerIsRunning) { (playerIsRunning) ? this.x += 1.5 : this.x += 1.5; }
-    moveLeft() { this.x -= 1.5; }
+    move() {
+        this.x -= 0.5 * (this.width / 100);
+    }
+
+    moveLeft(playerIsRunning) {
+        playerIsRunning ? this.x -= 0.6 * (this.width / 100) : this.x -= 0.2 * (this.width / 100);
+    }
+
+    moveRight() {
+        this.x += 0.8 * (this.width / 100);
+    }
 
     reset() {
         this.x = this.ctx.canvas.width + Math.floor(Math.random() * 1000);
-        this.y = Math.floor(Math.random() * 100);
-        this.width = Math.floor(Math.random() * 100) + 100;
-        this.height = this.width / 2;
+        this.y = Math.floor(Math.random() * 250);
+        this.width = Math.floor(Math.random() * 300) + 100;
+        this.height = this.width / 2 + 30;
     }
 }

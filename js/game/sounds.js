@@ -1,8 +1,8 @@
 const sounds = {
-    jumpSFX: new Audio("../../sounds/jump.wav"),
-    stepsSFX: new Audio("../../sounds/step.ogg"),
-    hitSFX: new Audio("../../sounds/hit.wav"),
-    backgroundSFX: new Audio("../../sounds/background.mp3"),
+    jumpSFX: new Audio("../../sounds/jump.webm"),
+    stepsSFX: new Audio("../../sounds/step.webm"),
+    hitSFX: new Audio("../../sounds/hit.webm"),
+    backgroundSFX: new Audio("../../sounds/background.webm"),
 
     config: () => {
         sounds.stepsSFX.volume = sounds.hitSFX.volume = sounds.jumpSFX.volume = sounds.backgroundSFX.volume = 0.4;

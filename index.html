@@ -5,15 +5,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="author" content="Leandro Adrian da Silva" />
+  <meta name="description" content="Jogo do Dinossauro - criado utilizando HTML Canvas e JS Puro" />
+  <meta name="keywords" content="HTML, Canvas, JS, Puro, Dino, Dinosaur, Game, Jogo, Dinossauro" />
+  <meta name="google" content="notranslate" />
 
   <link rel="stylesheet" href="./css/style.css">
   <link rel="icon" href="./logo.png">
 
-  <title>Game</title>
+  <title>The Dinosaur Game</title>
 </head>
 
 <body>
-  <aside class="modal absolute">
+  <div class="loader absolute">
+    <div class="img">
+      <img src="/images/animations/Idle (1).png" alt="Dinosaur Image">
+    </div>
+  </div>
+
+  <div class="modal absolute">
     <div class="table-container">
       <table>
         <tr>
@@ -78,14 +87,7 @@
     </div>
 
     <p>Press C or click to close this window.</p>
-
-    <p>
-      Credits:
-      <a href="https://opengameart.org/content/platformer-jumping-sounds" target="_blank">jump sound</a>,
-      <a href="https://opengameart.org/content/footsteps-on-different-surfaces" target="_blank">steps sound</a>,
-      <a href="https://opengameart.org/content/short-impact" target="_blank">hit sound</a>
-    </p>
-  </aside>
+  </div>
 
   <script src="js/index.js" type="module"></script>
 </body>
