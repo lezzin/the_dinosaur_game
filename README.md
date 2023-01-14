@@ -1,8 +1,18 @@
-Créditos:
+# The Dinosaur Game
 
-[jump sound](https://opengameart.org/content/platformer-jumping-sounds),
-[steps sound](https://opengameart.org/content/footsteps-on-different-surfaces),
-[hit sound](https://opengameart.org/content/short-impact),
-[background sound](https://opengameart.org/content/platformer-game-music-pack)
-[cloud images](https://opengameart.org/content/2d-clouds-pack),
-[dino image](https://www.gameart2d.com/free-dino-sprites.html)
+Jogo criado utilizando HTML Canvas e Javascript puro com POO (Programação Orientada a Objetos).
+Para rodar esse projeto, é necessário que você o utilize em um servidor: podendo ser o XAMPP ou a extensão Live Server no VSCode.
+
+## Créditos:
+
+[Clique aqui](https://www.youtube.com/watch?v=yTlmOpW6kOc) para acessar o video em que retirei o código das animações do personagem (dinossauro).
+
+#### Sons:
+- [Pulo](https://opengameart.org/content/platformer-jumping-sounds)
+- [Passos do personagem](https://opengameart.org/content/footsteps-on-different-surfaces)
+- [Hit quando o personagem colide com o cacto](https://opengameart.org/content/short-impact)
+- [Música de fundo](https://opengameart.org/content/platformer-game-music-pack) 
+
+#### Imagens:
+- [Imagens das nuvens](https://opengameart.org/content/2d-clouds-pack)
+- [Sprites do dinossauro](https://www.gameart2d.com/free-dino-sprites.html)
