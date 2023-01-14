@@ -2,6 +2,11 @@
 
 Jogo criado utilizando HTML Canvas e Javascript puro com POO (Programação Orientada a Objetos).
 Para rodar esse projeto, é necessário que você o utilize em um servidor: podendo ser o XAMPP ou a extensão Live Server no VSCode.
+<div style="display: inline_block">
+    <img src="https://img.shields.io/badge/Javascript-000?style=for-the-badge&logo=javascript&logoColor=yellow"  alt="Javascript Logo" align="center" />
+</div><br>
+
+![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=lezzin&repo=Jogo-em-JS-com-Canvas&theme=dark&show_owner=true)
 
 ## Créditos:
 
