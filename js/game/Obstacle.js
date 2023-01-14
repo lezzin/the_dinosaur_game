@@ -12,12 +12,12 @@ export default class Obstacles {
         this.height = context.canvas.height;
 
         this.obstacles.push(
-            new Obstacle(this.context),
-            new Obstacle(this.context),
-            new Obstacle(this.context),
-            new Obstacle(this.context),
-            new Obstacle(this.context),
-            new Obstacle(this.context),
+            new Obstacle(context),
+            new Obstacle(context),
+            new Obstacle(context),
+            new Obstacle(context),
+            new Obstacle(context),
+            new Obstacle(context),
         );
 
         this.setSpeed();

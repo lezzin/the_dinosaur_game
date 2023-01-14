@@ -4,7 +4,8 @@
     --font-color: #f8f8f8;
     --bg-color: #000;
     --main-bg-color: #4fbef1;
-    --border: 10px groove var(--font-color);
+    --border-color: #fff;
+    --border: 10px groove var(--border-color);
 }
 
 * {

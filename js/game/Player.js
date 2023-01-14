@@ -82,7 +82,7 @@ export default class Player {
   }
 
   reset() {
-    this.x = 0;
+    this.x = 10;
     this.y = this.context.canvas.height - this.context.canvas.height / 3 - 9;
   }
 

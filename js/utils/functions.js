@@ -7,9 +7,7 @@ export function img(file, src) {
   return image;
 }
 
-export function writeTextOnCanvas(context, text, position, options = null) {
-  if (!options) options = {};
-
+export function writeTextOnCanvas(context, text, position, options = {}) {
   context.fillStyle = options.color ?? colors.normalFont;
   context.font = options.font ?? "16px Arial";
   context.textAlign = options.align ?? "center";
@@ -17,6 +15,6 @@ export function writeTextOnCanvas(context, text, position, options = null) {
 
   if (!options.border) return;
   context.strokeStyle = colors.black;
-  context.lineWidth = 0.5;
+  context.lineWidth = 0.8;
   context.strokeText(text, position.x, position.y);
 }

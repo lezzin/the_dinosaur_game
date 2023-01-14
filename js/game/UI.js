@@ -33,7 +33,11 @@ const SCREENS_MESSAGES = {
     scoreboard: {
         title: "Scoreboard",
         paragraph: "Press Enter to go back to menu",
+        noScores: "No scores here... 😢",
+        score: (index, score) => `${index + 1}. Score: ${score.score} & Date: ${score.date}`,
     },
+    score: (score) => `Score: ${score}`,
+    lifes: (lifes) => lifes.join(""),
 };
 
 const DEFAULT_SCREEN = GAME_SCREENS.menu;
@@ -58,28 +62,28 @@ export default class UI {
         sounds.config();
         sounds.backgroundSFX.play();
 
-        this.enableEventListeners();
+        this.#enableEventListeners();
     }
 
-    enableEventListeners() {
-        document.addEventListener("keydown", this.#keydown);
+    #enableEventListeners() {
+        document.addEventListener("keypress", this.#keypress);
         document.addEventListener("keydown", this.player.keydown);
         document.addEventListener("keyup", this.player.keyup);
     }
 
     draw() {
         const screens = {
-            menuScreen: () => this.#drawMenu(),
-            gameScreen: () => this.#drawGame(),
-            gameOverScreen: () => this.#drawGameOver(),
-            winScreen: () => this.#drawWin(),
-            scoreboardScreen: () => this.#drawScoreBoard(),
+            menuScreen: () => this.#drawMenuScreen(),
+            gameScreen: () => this.#drawGameScreen(),
+            gameOverScreen: () => this.#drawGameOverScreen(),
+            winScreen: () => this.#drawWinScreen(),
+            scoreboardScreen: () => this.#drawScoreBoardScreen(),
         };
 
         screens[this.currentScreen]();
     }
 
-    #drawMenu() {
+    #drawMenuScreen() {
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.menu.title,
@@ -93,20 +97,20 @@ export default class UI {
         );
     }
 
-    #drawGame() {
+    #drawGameScreen() {
         let isScoreBiggerThanNine = this.score > 9;
         let paddingRight = isScoreBiggerThanNine ? 10 : 0;
 
         writeTextOnCanvas(
             this.context,
-            this.lifes.join(""),
+            SCREENS_MESSAGES.lifes(this.lifes),
             { x: 10, y: 35 },
             { font: "26px Arial", align: "left" },
         );
         writeTextOnCanvas(
             this.context,
-            `Score: ${this.score}`
-            , { x: this.width - 110 - paddingRight, y: 35 },
+            SCREENS_MESSAGES.score(this.score),
+            { x: this.width - 110 - paddingRight, y: 35 },
             { font: "26px Arial", align: "left" },
         );
 
@@ -121,7 +125,7 @@ export default class UI {
         this.#checkCollisionWithObstacle();
     }
 
-    #drawGameOver() {
+    #drawGameOverScreen() {
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.gameOver.title,
@@ -136,7 +140,7 @@ export default class UI {
         );
         writeTextOnCanvas(
             this.context,
-            `Score: ${this.score} points`,
+            SCREENS_MESSAGES.score(this.score),
             { x: this.width / 2, y: this.height / 2 + 30 }
         );
         writeTextOnCanvas(
@@ -149,7 +153,7 @@ export default class UI {
         this.player.draw(true);
     }
 
-    #drawWin() {
+    #drawWinScreen() {
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.win.title,
@@ -158,7 +162,7 @@ export default class UI {
         );
         writeTextOnCanvas(
             this.context,
-            `Score: ${this.score}  |  Lives: ${this.lifes}`,
+            `${SCREENS_MESSAGES.score(this.score)} 🎉`,
             { x: this.width / 2, y: this.height / 2 + 30 },
             { color: colors.dangerFont, font: "18px Arial Black" },
         );
@@ -175,9 +179,9 @@ export default class UI {
         );
     }
 
-    #drawScoreBoard() {
-        const scores = JSON.parse(localStorage.getItem("scores")) || [];
-        const ordenedScoresByBiggestScore = scores.sort((a, b) => b.score - a.score);
+    #drawScoreBoardScreen() {
+        const scores = this.#getScores();
+        const sortedScoresByTheBiggest = scores.sort((a, b) => b.score - a.score);
 
         writeTextOnCanvas(
             this.context,
@@ -189,20 +193,20 @@ export default class UI {
         if (scores.length === 0)
             return writeTextOnCanvas(
                 this.context,
-                "No scores here... 😢",
+                SCREENS_MESSAGES.scoreboard.noScores,
                 { x: this.width / 2, y: this.height / 2 },
                 { color: colors.dangerFont }
             );
 
-        ordenedScoresByBiggestScore.forEach((score, index) => {
+        sortedScoresByTheBiggest.forEach((score, index) => {
             const isFirst = index === 0,
                 isLessThanFive = index < 5,
                 color = isFirst ? colors.dangerFont : colors.normalFont,
-                font = isFirst ? "16px Arial Black" : "16px Arial";
+                font = isFirst ? "17px Arial Black" : "16px Arial";
 
             isLessThanFive && writeTextOnCanvas(
                 this.context,
-                `${index + 1}. Score: ${score.score} & Date: ${score.date}`,
+                SCREENS_MESSAGES.scoreboard.score(index, score),
                 { x: this.width / 2, y: this.height / 2 + 10 + index * 30 },
                 { color, font },
             );
@@ -215,11 +219,11 @@ export default class UI {
         );
     }
 
-    #setGameScreen(key) {
+    #setGameScreen(keyPressed) {
         if (this.currentScreen === GAME_SCREENS.game) return;
         this.#resetAll();
 
-        switch (key) {
+        switch (keyPressed) {
             case "enter":
                 if (this.currentScreen === GAME_SCREENS.menu || this.currentScreen === GAME_SCREENS.gameOver)
                     this.currentScreen = GAME_SCREENS.game;
@@ -234,6 +238,15 @@ export default class UI {
                 this.currentScreen = GAME_SCREENS.menu;
                 break;
         }
+    }
+
+    #checkScore() {
+        const allObstacles = this.obstacles.obstacles;
+
+        allObstacles.forEach((obstacle) => {
+            const playerPassedObstacle = obstacle.x + obstacle.width < this.player.x / 2;
+            if (playerPassedObstacle) this.score++;
+        });
     }
 
     #checkCloudsMovements() {
@@ -268,22 +281,8 @@ export default class UI {
         }
     }
 
-    #checkScore() {
-        const allObstacles = this.obstacles.obstacles;
-        for (const obstacle of allObstacles) {
-            if (obstacle.x + obstacle.width < 10)
-                this.score += 1;
-        }
-
-        if (this.scores === 15) this.#addOneLifeToThePlayer();
-    }
-
     #removeOneLifeFromThePlayer() {
         this.lifes.pop();
-    }
-
-    #addOneLifeToThePlayer() {
-        this.lifes.length < 3 && this.lifes.push('❤️');
     }
 
     #resetTheStage() {
@@ -308,12 +307,14 @@ export default class UI {
         this.obstacles.reset();
     }
 
+    #getScores = () => JSON.parse(localStorage.getItem("scores")) || [];
+
     #saveScore() {
-        const scores = JSON.parse(localStorage.getItem("scores")) || [];
+        const scores = this.#getScores();
         const scoreAlreadyExists = scores.find((score) => score.score === this.score);
         if (scoreAlreadyExists) return;
 
-        const currentTime = new Date();
+        const currentTime = new Date().toLocaleString();
         scores.push({ score: this.score, date: currentTime });
         localStorage.setItem("scores", JSON.stringify(scores));
     }
@@ -322,7 +323,7 @@ export default class UI {
         confirm("Are you sure you want to delete the scoreboard?") && localStorage.removeItem("scores");
     }
 
-    #keydown = (event) => {
+    #keypress = (event) => {
         const events = {
             Enter: () => this.#setGameScreen("enter"),
             KeyS: () => this.#setGameScreen("s"),

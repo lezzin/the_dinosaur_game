@@ -13,13 +13,13 @@ document.body.append(canvas);
 canvas.width = dimensions.width;
 canvas.height = dimensions.height;
 
-const ctx = canvas.getContext("2d");
+const context = canvas.getContext("2d");
 
 const frames = 60;
-const ui = new UI(ctx);
+const ui = new UI(context);
 
 function game() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   ui.draw();
 }
 
