@@ -1,6 +1,11 @@
 import { img } from "../utils/functions.js";
 import colors from "./colors.js";
 
+const CLOUD_VELOCITIES = {
+    normal: (width) => 0.2 * Math.floor(width / 100),
+    running: (width) => 0.4 * Math.floor(width / 100),
+}
+
 export default class Scenaries {
     cloudCanMoveRight = false;
     cloudCanMoveLeft = false;
@@ -17,25 +22,26 @@ export default class Scenaries {
 
         this.clouds = [
             new Cloud(this.context, img("cloud1.png", "scenaries")),
-            new Cloud(this.context, img("cloud2.png", "scenaries")),
-            new Cloud(this.context, img("cloud3.png", "scenaries")),
+            new Cloud(this.context, img("cloud1.png", "scenaries")),
             new Cloud(this.context, img("cloud1.png", "scenaries")),
             new Cloud(this.context, img("cloud2.png", "scenaries")),
             new Cloud(this.context, img("cloud2.png", "scenaries")),
+            new Cloud(this.context, img("cloud2.png", "scenaries")),
             new Cloud(this.context, img("cloud3.png", "scenaries")),
             new Cloud(this.context, img("cloud3.png", "scenaries")),
-            new Cloud(this.context, img("cloud1.png", "scenaries")),
+            new Cloud(this.context, img("cloud3.png", "scenaries")),
         ].sort((firstCloud, secondCloud) => firstCloud.defaultWidth - secondCloud.defaultWidth);
     }
 
     draw() {
-        this.#drawFloor();
+        this.#drawGround();
         this.#drawClouds();
     }
 
-    #drawFloor() {
-        this.context.fillStyle = colors.floor;
+    #drawGround() {
+        this.context.fillStyle = colors.ground;
         this.context.fillRect(0, this.context.canvas.height - 25.5, this.context.canvas.width, 26);
+
         this.context.strokeStyle = colors.darkGround;
         this.context.lineWidth = 3;
         this.context.beginPath();
@@ -45,7 +51,7 @@ export default class Scenaries {
     }
 
     #drawClouds() {
-        this.clouds.forEach(cloud => {
+        for (const cloud of this.clouds) {
             cloud.draw();
 
             this.cloudCanMoveRight && cloud.moveRight();
@@ -53,11 +59,11 @@ export default class Scenaries {
 
             const cloudPassedCanvasRightBorder = cloud.x + cloud.width < 0;
             cloudPassedCanvasRightBorder && cloud.reset();
-        });
+        };
     }
 
     reset() {
-        this.clouds.forEach(cloud => cloud.reset());
+        for (const cloud of this.clouds) cloud.reset();
     }
 }
 
@@ -81,15 +87,20 @@ class Cloud {
     }
 
     move() {
-        this.x -= 0.2 * (Math.ceil(this.width / 100));
+        this.x -= CLOUD_VELOCITIES.normal(this.width);
     }
 
     moveLeft(playerIsRunning) {
-        playerIsRunning ? this.x -= 0.4 * (this.width / 100) : this.x -= 0.2 * (Math.ceil(this.width / 100));
+        if (playerIsRunning) {
+            this.x -= CLOUD_VELOCITIES.running(this.width);
+            return;
+        }
+
+        this.x -= CLOUD_VELOCITIES.normal(this.width);
     }
 
     moveRight() {
-        this.x += 0.2 * (Math.ceil(this.width / 100));
+        this.x += CLOUD_VELOCITIES.normal(this.width);
     }
 
     reset() {

@@ -1,6 +1,6 @@
 const colors = {
-    floor: "#1aa12c",
-    darkFloor: "#000",
+    ground: "#1aa12c",
+    darkGround: "#000",
     dangerFont: "#c03939",
     successFont: "#2ebb71",
     normalFont: "#ffffff",

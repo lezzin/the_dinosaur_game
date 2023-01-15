@@ -20,7 +20,7 @@ export default class Obstacles {
             new Obstacle(context),
         );
 
-        this.setSpeed();
+        this.setVelocity();
     }
 
     draw() {
@@ -34,17 +34,17 @@ export default class Obstacles {
         }
     }
 
-    setSpeed(selectedDifficulty = "easy") {
-        this.obstacles.forEach(obstacle => obstacle.setSpeed(selectedDifficulty));
+    setVelocity(selectedDifficulty = "easy") {
+        for (const obstacle of this.obstacles) obstacle.setVelocity(selectedDifficulty);
     }
 
     reset() {
-        this.obstacles.forEach(obstacle => obstacle.reset());
+        for (const obstacle of this.obstacles) obstacle.reset();
     }
 }
 
 class Obstacle {
-    speed = 0;
+    velocity = 0;
     width = 70;
     height = 30;
 
@@ -55,14 +55,14 @@ class Obstacle {
         this.y = context.canvas.height - 35;
     }
 
-    setSpeed(selectedDifficulty) {
-        const difficultySpeeds = {
+    setVelocity(selectedDifficulty) {
+        const VELOCITIES = {
             easy: 5,
             medium: 10,
             hard: 15
         };
 
-        this.speed = difficultySpeeds[selectedDifficulty];
+        this.velocity = VELOCITIES[selectedDifficulty];
     }
 
     draw() {
@@ -71,11 +71,11 @@ class Obstacle {
     }
 
     moveLeft(playerIsRunning) {
-        this.x -= this.speed + (playerIsRunning ? 5 : 0);
+        this.x -= this.velocity + (playerIsRunning ? 5 : 0);
     }
 
     moveRight() {
-        this.x += this.speed;
+        this.x += this.velocity;
     }
 
     reset() {

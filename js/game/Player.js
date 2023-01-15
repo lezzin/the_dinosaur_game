@@ -39,19 +39,26 @@ export default class Player {
     if (this.shouldJump) {
       let playerIsRunning = this.runPressed && this.rightPressed && this.state !== PlayerStates.dead;
       let millisecondsInTheAir = playerIsRunning ? 15 : 28;
+
       this.jumpCount++;
 
-      if (this.jumpCount < 13) this.y -= this.jumpHeight;
-      if (this.jumpCount > 13 && this.jumpCount < 25) this.y += 0;
-      if (this.jumpCount > millisecondsInTheAir) this.y += this.jumpHeight;
+      if (this.jumpCount < 13)
+        this.y -= this.jumpHeight; // player can jump
+
+      if (this.jumpCount > 13 && this.jumpCount < 25)
+        this.y += 0; // player stop in the air for a moment
+
+      if (this.jumpCount > millisecondsInTheAir)
+        this.y += this.jumpHeight; // player fall
+
       if (this.jumpCount > 45) {
         this.shouldJump = false;
         this.jumpCount = 0;
       }
     }
 
-    const groundHeight = this.context.canvas.height - this.context.canvas.height / 3 - 9;
-    if (this.y > groundHeight) this.y = groundHeight;
+    const playerIsAboveTheGround = this.y > this.context.canvas.height - this.context.canvas.height / 3 - 9;
+    if (playerIsAboveTheGround) this.y = groundHeight;
     // ---------------------------- /Jump ---------------------------- //
 
 
