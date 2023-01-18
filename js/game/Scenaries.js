@@ -76,6 +76,9 @@ class Cloud {
         this.width = Math.floor(Math.random() * 400) + 100;
         this.height = this.width / 2 + 30;
 
+        this.defaultWidth = this.width;
+        this.defaultHeight = this.height;
+
         this.image = image;
     }
 
