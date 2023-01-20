@@ -3,44 +3,11 @@ import { writeTextOnCanvas } from "../utils/functions.js";
 import colors from "./colors.js";
 import sounds from "./sounds.js";
 
+import { DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
+
 import Player from "./Player.js";
 import Scenaries from "./Scenaries.js";
 import Obstacles from "./Obstacle.js";
-
-const GAME_SCREENS = {
-    menu: "menuScreen",
-    game: "gameScreen",
-    gameOver: "gameOverScreen",
-    win: "winScreen",
-    scoreboard: "scoreboardScreen",
-};
-
-const SCREENS_MESSAGES = {
-    menu: {
-        title: "Press Enter to start",
-        subtitle: "Press C to open the commands",
-    },
-    gameOver: {
-        title: "Game Over!",
-        subtitle: "Press Enter to restart",
-        paragraph: "Press C to open the commands",
-    },
-    win: {
-        title: "You Win!",
-        subtitle: "Press Enter to play again",
-        paragraph: "Press C to open the commands",
-    },
-    scoreboard: {
-        title: "Scoreboard",
-        paragraph: "Press Enter to go back to menu",
-        noScores: "No scores here... 😢",
-        score: (index, score) => `${index + 1}. Score: ${score.score} & Date: ${score.date}`,
-    },
-    score: (score) => `Score: ${score}`,
-    lifes: (lifes) => lifes.join(""),
-};
-
-const DEFAULT_SCREEN = GAME_SCREENS.menu;
 
 export default class UI {
     currentScreen = DEFAULT_SCREEN;
@@ -99,29 +66,41 @@ export default class UI {
 
     #drawGameScreen() {
         let isScoreBiggerThanNine = this.score > 9;
-        let paddingRight = isScoreBiggerThanNine ? 10 : 0;
+        let isHighestScoreBiggerThanNine = this.#getHighestScore() > 9;
+        let scorePaddingRight = isScoreBiggerThanNine ? 10 : 0;
+        let highestScorePaddingRight = isHighestScoreBiggerThanNine ? 10 : 0;
 
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.lifes(this.lifes),
-            { x: 10, y: 35 },
-            { font: "26px Arial", align: "left" },
+            { x: 10, y: 30 },
+            { font: "18px Arial", align: "left" },
         );
+
+        writeTextOnCanvas(
+            this.context,
+            SCREENS_MESSAGES.highest(this.#getHighestScore()),
+            { x: this.width - 141 - highestScorePaddingRight, y: 30 },
+            { font: "18px Arial", align: "left" },
+        );
+
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.score(this.score),
-            { x: this.width - 110 - paddingRight, y: 35 },
-            { font: "26px Arial", align: "left" },
+            { x: this.width - 80 - scorePaddingRight, y: 60 },
+            { font: "18px Arial", align: "left" },
         );
 
         this.sceneries.draw();
         this.#checkCloudsMovements();
 
         this.player.draw();
+
         this.obstacles.draw();
         this.#checkObstacleMovement();
 
         this.#checkScore();
+        this.#checkIfCanUpdateHighestScore();
         this.#checkCollisionWithObstacle();
     }
 
@@ -186,7 +165,7 @@ export default class UI {
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.scoreboard.title,
-            { x: this.width / 2, y: this.height / 2 - 60 },
+            { x: this.width / 2, y: 50 },
             { font: "34px Arial Black", color: colors.successFont, border: true },
         );
 
@@ -207,7 +186,7 @@ export default class UI {
             isLessThanFive && writeTextOnCanvas(
                 this.context,
                 SCREENS_MESSAGES.scoreboard.score(index, score),
-                { x: this.width / 2, y: this.height / 2 + 10 + index * 30 },
+                { x: this.width / 2, y: this.height / 2 - 60 + index * 30 },
                 { color, font },
             );
         });
@@ -244,9 +223,18 @@ export default class UI {
         const allObstacles = this.obstacles.obstacles;
 
         allObstacles.forEach((obstacle) => {
-            const playerPassedObstacle = obstacle.x + obstacle.width < this.player.x / 2;
+            const playerPassedObstacle = obstacle.x + obstacle.width < this.player.x && !obstacle.passed;
             if (playerPassedObstacle) this.score++;
         });
+    }
+
+    #checkIfCanUpdateHighestScore() {
+        const highestScore = this.#getHighestScore();
+        if (this.score > highestScore) this.#saveHighestScore();
+    }
+
+    #saveHighestScore() {
+        localStorage.setItem("highestScore", this.score);
     }
 
     #checkCloudsMovements() {
@@ -309,6 +297,11 @@ export default class UI {
 
     #getScores = () => JSON.parse(localStorage.getItem("scores")) || [];
 
+    #getHighestScore = () => {
+        const highestScore = localStorage.getItem("highestScore");
+        return highestScore ? highestScore : 0;
+    };
+
     #saveScore() {
         const scores = this.#getScores();
         const scoreAlreadyExists = scores.find((score) => score.score === this.score);
@@ -320,7 +313,10 @@ export default class UI {
     }
 
     #deleteScores() {
-        confirm("Are you sure you want to delete the scoreboard?") && localStorage.removeItem("scores");
+        if (confirm("Are you sure you want to delete the scoreboard?")) {
+            localStorage.removeItem("scores");
+            localStorage.removeItem("highestScore");
+        }
     }
 
     #keypress = (event) => {

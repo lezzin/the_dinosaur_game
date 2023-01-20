@@ -57,8 +57,9 @@ export default class Player {
       }
     }
 
-    const playerIsAboveTheGround = this.y > this.context.canvas.height - this.context.canvas.height / 3 - 9;
-    if (playerIsAboveTheGround) this.y = groundHeight;
+    const ground = this.context.canvas.height - this.context.canvas.height / 3 - 9;
+    const playerIsAboveTheGround = this.y > ground;
+    if (playerIsAboveTheGround) this.y = ground;
     // ---------------------------- /Jump ---------------------------- //
 
 
@@ -78,7 +79,8 @@ export default class Player {
 
   #setState() {
     if (this.jumpPressed)
-      return this.state = PlayerStates.jump
+      return this.state = PlayerStates.jump;
+
     if (this.runPressed && this.rightPressed)
       return this.state = PlayerStates.run;
 
@@ -117,10 +119,7 @@ export default class Player {
       Space: () => this.jumpPressed = true,
     }
 
-    const eventExists = keydownEvents[event.code];
-    const callEvent = keydownEvents[event.code];
-
-    eventExists && callEvent();
+    keydownEvents[event.code] && keydownEvents[event.code]();
   };
 
   keyup = (event) => {
@@ -133,9 +132,6 @@ export default class Player {
       Space: () => this.jumpPressed = false,
     }
 
-    const eventExists = keypressEvents[event.code];
-    const callEvent = keypressEvents[event.code];
-
-    eventExists && callEvent();
+    keypressEvents[event.code] && keypressEvents[event.code]();
   };
 }

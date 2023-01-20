@@ -6,6 +6,7 @@
     --main-bg-color: #4fbef1;
     --border-color: #fff;
     --border: 10px groove var(--border-color);
+    --sky: linear-gradient(360deg, #4fbef1 0%, #1e6485 100%);
 }
 
 * {
@@ -25,7 +26,7 @@ body {
 }
 
 canvas {
-    background-color: var(--main-bg-color);
+    background: var(--sky);
     border: var(--border);
 }
 

@@ -1,5 +1,7 @@
+import { writeTextOnCanvas } from "../utils/functions.js";
+import { OBSTACLES_VELOCITIES, OBSTACLE_IMAGE } from "./constants.js";
+
 export default class Obstacles {
-    obstacles = [];
     canMoveLeft = false;
     canMoveRight = false;
     playerIsRunning = false;
@@ -11,14 +13,14 @@ export default class Obstacles {
         this.width = context.canvas.width;
         this.height = context.canvas.height;
 
-        this.obstacles.push(
+        this.obstacles = [
             new Obstacle(context),
             new Obstacle(context),
             new Obstacle(context),
             new Obstacle(context),
             new Obstacle(context),
             new Obstacle(context),
-        );
+        ];
 
         this.setVelocity();
     }
@@ -47,6 +49,7 @@ class Obstacle {
     velocity = 0;
     width = 70;
     height = 30;
+    passed = false;
 
     constructor(context) {
         this.context = context;
@@ -56,18 +59,16 @@ class Obstacle {
     }
 
     setVelocity(selectedDifficulty) {
-        const VELOCITIES = {
-            easy: 5,
-            medium: 10,
-            hard: 15
-        };
-
-        this.velocity = VELOCITIES[selectedDifficulty];
+        this.velocity = OBSTACLES_VELOCITIES[selectedDifficulty];
     }
 
     draw() {
-        this.context.font = "50px Arial";
-        this.context.fillText("🌵", this.x, this.y);
+        writeTextOnCanvas(
+            this.context,
+            OBSTACLE_IMAGE,
+            { x: this.x, y: this.y, },
+            { font: "50px Arial" },
+        );
     }
 
     moveLeft(playerIsRunning) {
@@ -81,9 +82,12 @@ class Obstacle {
     reset() {
         let randomNumber = Math.floor(Math.random() * 1000);
         this.x = this.context.canvas.width + randomNumber * 15;
+        this.passed = false;
     }
 
     outOfBounds() {
-        return this.x + this.width < 0;
+        const outOfScreen = this.x + this.width < 0;
+        this.passed = outOfScreen && !this.passed;
+        return outOfScreen;
     }
 }

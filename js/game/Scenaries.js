@@ -1,10 +1,6 @@
 import { img } from "../utils/functions.js";
 import colors from "./colors.js";
-
-const CLOUD_VELOCITIES = {
-    normal: (width) => 0.2 * Math.floor(width / 100),
-    running: (width) => 0.4 * Math.floor(width / 100),
-}
+import { CLOUD_VELOCITIES } from "./constants.js";
 
 export default class Scenaries {
     cloudCanMoveRight = false;
