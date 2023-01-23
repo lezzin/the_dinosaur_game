@@ -26,7 +26,6 @@ body {
 }
 
 canvas {
-    background: var(--sky);
     border: var(--border);
 }
 

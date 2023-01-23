@@ -5,6 +5,15 @@ const colors = {
     successFont: "#2ebb71",
     normalFont: "#ffffff",
     black: "#000",
+
+    menuBackground: "#4fbef1",
+    scoreboardBackground: "#4fbef1",
+    gameBackground: {
+        start: "#4fbef1",
+        end: "#00407f",
+    },
+
+    gameOverBackground: "#c03939",
 }
 
 export default colors;

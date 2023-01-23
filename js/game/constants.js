@@ -43,6 +43,7 @@ const SCREENS_MESSAGES = {
     score: (score) => `Score: ${score}`,
     highest: (highest) => `Highest score: ${highest}`,
     lifes: (lifes) => lifes.join(""),
+    record: "Good job! You've just broken the record! 🎉🎉🎉",
 };
 
 const DEFAULT_SCREEN = GAME_SCREENS.menu;

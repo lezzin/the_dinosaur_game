@@ -1,4 +1,4 @@
-import { writeTextOnCanvas } from "../utils/functions.js";
+import { writeTextOnCanvas, drawBackgroundOnCanvas } from "../utils/functions.js";
 
 import colors from "./colors.js";
 import sounds from "./sounds.js";
@@ -11,7 +11,8 @@ import Obstacles from "./Obstacle.js";
 
 export default class UI {
     currentScreen = DEFAULT_SCREEN;
-    lifes = ['❤️', '❤️', '❤️', '❤️'];
+    numLifes = 4;
+    lifes = [];
     score = 0;
 
     constructor(context) {
@@ -30,6 +31,7 @@ export default class UI {
         sounds.backgroundSFX.play();
 
         this.#enableEventListeners();
+        this.#setLifes();
     }
 
     #enableEventListeners() {
@@ -51,6 +53,8 @@ export default class UI {
     }
 
     #drawMenuScreen() {
+        drawBackgroundOnCanvas(this.context, colors.menuBackground);
+
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.menu.title,
@@ -70,6 +74,16 @@ export default class UI {
         let scorePaddingRight = isScoreBiggerThanNine ? 10 : 0;
         let highestScorePaddingRight = isHighestScoreBiggerThanNine ? 10 : 0;
 
+        drawBackgroundOnCanvas(this.context, colors.gameBackground, true);
+
+        this.sceneries.draw();
+        this.#checkCloudsMovements();
+
+        this.player.draw();
+
+        this.obstacles.draw();
+        this.#checkObstacleMovement();
+
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.lifes(this.lifes),
@@ -80,7 +94,7 @@ export default class UI {
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.highest(this.#getHighestScore()),
-            { x: this.width - 141 - highestScorePaddingRight, y: 30 },
+            { x: this.width - 143 - highestScorePaddingRight, y: 30 },
             { font: "18px Arial", align: "left" },
         );
 
@@ -91,25 +105,22 @@ export default class UI {
             { font: "18px Arial", align: "left" },
         );
 
-        this.sceneries.draw();
-        this.#checkCloudsMovements();
-
-        this.player.draw();
-
-        this.obstacles.draw();
-        this.#checkObstacleMovement();
-
         this.#checkScore();
         this.#checkIfCanUpdateHighestScore();
         this.#checkCollisionWithObstacle();
     }
 
     #drawGameOverScreen() {
+        let scoreIsBiggerThanHighestScore = this.score > this.#getHighestScore();
+        let scoreText = scoreIsBiggerThanHighestScore ? SCREENS_MESSAGES.record : SCREENS_MESSAGES.score(this.score);
+
+        drawBackgroundOnCanvas(this.context, colors.gameOverBackground);
+
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.gameOver.title,
             { x: this.width / 2, y: this.height / 2 - 60 },
-            { color: colors.dangerFont, font: "34px Arial Black", border: true },
+            { color: colors.normalFont, font: "34px Arial Black" },
         );
         writeTextOnCanvas(
             this.context,
@@ -119,7 +130,7 @@ export default class UI {
         );
         writeTextOnCanvas(
             this.context,
-            SCREENS_MESSAGES.score(this.score),
+            scoreText,
             { x: this.width / 2, y: this.height / 2 + 30 }
         );
         writeTextOnCanvas(
@@ -159,6 +170,8 @@ export default class UI {
     }
 
     #drawScoreBoardScreen() {
+        drawBackgroundOnCanvas(this.context, colors.scoreboardBackground);
+
         const scores = this.#getScores();
         const sortedScoresByTheBiggest = scores.sort((a, b) => b.score - a.score);
 
@@ -252,8 +265,17 @@ export default class UI {
     #setDifficulty(selectedDifficulty) {
         if (this.currentScreen === GAME_SCREENS.game) return;
 
+        const lifesPerDifficulty = {
+            "easy": 4,
+            "medium": 3,
+            "hard": 2,
+        }
+
+        this.numLifes = lifesPerDifficulty[selectedDifficulty];
+        this.#setLifes();
+
+        this.obstacles.setVelocity(selectedDifficulty);
         alert(`The ${selectedDifficulty} difficulty is selected.`);
-        this.obstacles.setSpeed(selectedDifficulty);
     }
 
     #checkCollisionWithObstacle() {
@@ -273,6 +295,12 @@ export default class UI {
         this.lifes.pop();
     }
 
+    #setLifes() {
+        this.lifes = [];
+        for (let i = 0; i < this.numLifes; i++) this.lifes.push('❤️');
+        this.defaultLifes = this.lifes;
+    }
+
     #resetTheStage() {
         sounds.hitSFX.play();
         this.#removeOneLifeFromThePlayer();
@@ -290,7 +318,7 @@ export default class UI {
 
     #resetAll() {
         this.score = 0;
-        this.lifes = ['❤️', '❤️', '❤️', '❤️'];
+        this.lifes = [...this.defaultLifes];
         this.player.reset();
         this.obstacles.reset();
     }
@@ -323,7 +351,7 @@ export default class UI {
         const events = {
             Enter: () => this.#setGameScreen("enter"),
             KeyS: () => this.#setGameScreen("s"),
-            Delete: () => this.#deleteScores(),
+            KeyR: () => this.#deleteScores(),
             KeyM: () => sounds.toggleMute(),
             Digit1: () => this.#setDifficulty("easy"),
             Digit2: () => this.#setDifficulty("medium"),
