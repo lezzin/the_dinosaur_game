@@ -30,12 +30,12 @@ addEventListener("load", () => {
 
   document.addEventListener("keypress", e => {
     const keyPressedIsCAndGameIsNotRunning = e.key === "c" && ui.gameState !== "game";
-    keyPressedIsCAndGameIsNotRunning && myModal.toggle();
+    
   });
 
   document.addEventListener("click", e => {
     const modalIsActive = e.target.classList.contains("active");
-    modalIsActive && myModal.close();
+    
   });
 
   document.addEventListener("visibilitychange", () => {
