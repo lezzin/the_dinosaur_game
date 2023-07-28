@@ -1,9 +1,9 @@
 import { writeTextOnCanvas, drawBackgroundOnCanvas } from "../utils/functions.js";
+import { DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
 
 import colors from "./colors.js";
 import sounds from "./sounds.js";
 
-import { DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
 
 import Player from "./Player.js";
 import Scenaries from "./Scenaries.js";
@@ -18,13 +18,11 @@ export default class UI {
     constructor(context) {
         this.context = context;
 
-        this.x = 0;
-        this.y = 0;
         this.width = context.canvas.width;
         this.height = context.canvas.height;
 
         this.player = new Player(context);
-        this.sceneries = new Scenaries(context);
+        this.scenaries = new Scenaries(context);
         this.obstacles = new Obstacles(context);
 
         sounds.config();
@@ -76,7 +74,7 @@ export default class UI {
 
         drawBackgroundOnCanvas(this.context, colors.gameBackground, true);
 
-        this.sceneries.draw();
+        this.scenaries.draw();
         this.#checkCloudsMovements();
 
         this.player.draw();
@@ -251,9 +249,9 @@ export default class UI {
     }
 
     #checkCloudsMovements() {
-        this.sceneries.cloudCanMoveLeft = (this.player.rightPressed) ? true : false;
-        this.sceneries.cloudCanMoveRight = (this.player.leftPressed) ? true : false;
-        this.sceneries.playerIsRunning = (this.player.runPressed) ? true : false;
+        this.scenaries.cloudCanMoveLeft = (this.player.rightPressed) ? true : false;
+        this.scenaries.cloudCanMoveRight = (this.player.leftPressed) ? true : false;
+        this.scenaries.playerIsRunning = (this.player.runPressed) ? true : false;
     }
 
     #checkObstacleMovement() {
@@ -280,14 +278,18 @@ export default class UI {
 
     #checkCollisionWithObstacle() {
         const allObstacles = this.obstacles.obstacles;
+        const playerOffsetX = 50;
+        const playerOffsetY = 20;
+
         for (const obstacle of allObstacles) {
             if (
-                this.player.x < obstacle.x + obstacle.width - 40 &&
-                this.player.x + this.player.width - 130 > obstacle.x &&
-                this.player.y < obstacle.y + obstacle.height &&
-                this.player.y + this.player.height > obstacle.y
-            )
+                this.player.x < obstacle.x + obstacle.width - playerOffsetX &&
+                this.player.x + this.player.width - playerOffsetX > obstacle.x &&
+                this.player.y < obstacle.y + obstacle.height - playerOffsetY &&
+                this.player.y + this.player.height - playerOffsetY > obstacle.y
+            ) {
                 this.#resetTheStage();
+            }
         }
     }
 
@@ -307,8 +309,10 @@ export default class UI {
 
         if (this.lifes.length > 0) {
             this.currentScreen = GAME_SCREENS.game;
+
             this.player.reset();
             this.obstacles.reset();
+            this.scenaries.reset();
             return;
         }
 
@@ -351,7 +355,9 @@ export default class UI {
         const events = {
             Enter: () => this.#setGameScreen("enter"),
             KeyS: () => this.#setGameScreen("s"),
-            KeyR: () => this.#deleteScores(),
+            KeyR: () => {
+                if (this.currentScreen !== GAME_SCREENS.game) this.#deleteScores();
+            },
             KeyM: () => sounds.toggleMute(),
             Digit1: () => this.#setDifficulty("easy"),
             Digit2: () => this.#setDifficulty("medium"),

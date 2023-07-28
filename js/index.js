@@ -2,20 +2,13 @@ import UI from "./game/UI.js";
 import myModal from './utils/modal.js';
 import myLoader from './utils/loader.js';
 
-const dimensions = {
-  width: innerWidth / 1.5,
-  height: innerHeight / 1.3,
-}
-
-const canvas = document.createElement("canvas");
-document.body.append(canvas);
-
-canvas.width = dimensions.width;
-canvas.height = dimensions.height;
-
+const canvas = document.querySelector("#canvas");
 const context = canvas.getContext("2d");
 
-const frames = 60;
+canvas.width = 480;
+canvas.height = 480;
+
+const frames = 110;
 const ui = new UI(context);
 
 function game() {
@@ -25,11 +18,13 @@ function game() {
 
 addEventListener("load", () => {
   myModal.open();
+
   setTimeout(() => { myLoader.close(); }, 500);
+
   setInterval(game, 1000 / frames);
 
   document.addEventListener("keypress", e => {
-    const keyPressedIsCAndGameIsNotRunning = e.key === "c" && ui.gameState !== "game";
+    const keyPressedIsCAndGameIsNotRunning = e.key === "c" && ui.currentScreen !== GAME_SCREENS.game;
     keyPressedIsCAndGameIsNotRunning && myModal.toggle();
   });
 

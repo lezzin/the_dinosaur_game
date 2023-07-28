@@ -8,13 +8,8 @@ export default class Obstacles {
 
     constructor(context) {
         this.context = context;
-        this.x = 0;
-        this.y = 0;
-        this.width = context.canvas.width;
-        this.height = context.canvas.height;
 
         this.obstacles = [
-            new Obstacle(context),
             new Obstacle(context),
             new Obstacle(context),
             new Obstacle(context),
@@ -37,29 +32,31 @@ export default class Obstacles {
     }
 
     setVelocity(selectedDifficulty = "easy") {
-        for (const obstacle of this.obstacles) obstacle.setVelocity(selectedDifficulty);
+        for (const obstacle of this.obstacles)
+            obstacle.setVelocity(selectedDifficulty);
     }
 
     reset() {
-        for (const obstacle of this.obstacles) obstacle.reset();
+        for (const obstacle of this.obstacles)
+            obstacle.reset();
     }
 }
 
 class Obstacle {
     velocity = 0;
-    width = 70;
-    height = 30;
+    width = 60;
+    height = 20;
     passed = false;
 
     constructor(context) {
         this.context = context;
 
-        this.x = context.canvas.width;
-        this.y = context.canvas.height - 35;
+        this.x = this.context.canvas.width;
+        this.y = (this.context.canvas.height / 2) + 166;
     }
 
     setVelocity(selectedDifficulty) {
-        this.velocity = OBSTACLES_VELOCITIES[selectedDifficulty];
+        this.velocity = OBSTACLES_VELOCITIES[selectedDifficulty] * (Math.random() * 1.5);
     }
 
     draw() {
@@ -80,8 +77,9 @@ class Obstacle {
     }
 
     reset() {
-        let randomNumber = Math.floor(Math.random() * 1000);
-        this.x = this.context.canvas.width + randomNumber * 15;
+        let randomNumber = Math.floor(Math.random() * 8000);
+
+        this.x = this.context.canvas.width + randomNumber;
         this.passed = false;
     }
 

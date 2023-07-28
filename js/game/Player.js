@@ -12,10 +12,10 @@ export default class Player {
     this.state = PlayerStates.idle;
 
     this.x = 10;
-    this.y = context.canvas.height - context.canvas.height / 3 - 9;
+    this.y = this.context.canvas.height - 200;
 
-    this.width = context.canvas.width / 4;
-    this.height = context.canvas.height / 3;
+    this.width = this.context.canvas.width / 3;
+    this.height = this.context.canvas.height / 3 - 10;
 
     this.createAnimations();
   }
@@ -26,9 +26,8 @@ export default class Player {
 
     const animation = this.animations.find(animation => animation.isFor(this.state));
     const image = animation.getImage();
-    const isInGround = this.y === this.context.canvas.height - this.context.canvas.height / 3 - 9;
+    const isInGround = this.y === this.context.canvas.height - 200;
 
-    // ---------------------------- Jump ---------------------------- //
     if (this.jumpPressed && this.state !== PlayerStates.dead && isInGround) {
       sounds.jumpSFX.play();
       this.jumpAnimation.reset();
@@ -43,13 +42,13 @@ export default class Player {
       this.jumpCount++;
 
       if (this.jumpCount < 13)
-        this.y -= this.jumpHeight; // player can jump
+        this.y -= this.jumpHeight;
 
       if (this.jumpCount > 13 && this.jumpCount < 25)
-        this.y += 0; // player stop in the air for a moment
+        this.y += 0;
 
       if (this.jumpCount > millisecondsInTheAir)
-        this.y += this.jumpHeight; // player fall
+        this.y += this.jumpHeight;
 
       if (this.jumpCount > 45) {
         this.shouldJump = false;
@@ -57,13 +56,10 @@ export default class Player {
       }
     }
 
-    const ground = this.context.canvas.height - this.context.canvas.height / 3 - 9;
+    const ground = this.context.canvas.height - 200;
     const playerIsAboveTheGround = this.y > ground;
     if (playerIsAboveTheGround) this.y = ground;
-    // ---------------------------- /Jump ---------------------------- //
 
-
-    // ---------------------------- Player Movement ---------------------------- //
     const arrowRightIsPressed = this.rightPressed && this.state !== PlayerStates.dead;
     const arrowLeftPressed = this.leftPressed && this.state !== PlayerStates.dead;
     const playerIsRunning = this.runPressed && this.rightPressed && this.state !== PlayerStates.dead;
@@ -72,7 +68,6 @@ export default class Player {
       sounds.stepsSFX.playbackRate = playerIsRunning ? 1.5 : 0.5;
       sounds.stepsSFX.play();
     }
-    // ---------------------------- /Player Movement ---------------------------- //
 
     this.context.drawImage(image, this.x, this.y, this.width, this.height);
   }
@@ -92,7 +87,7 @@ export default class Player {
 
   reset() {
     this.x = 10;
-    this.y = this.context.canvas.height - this.context.canvas.height / 3 - 9;
+    this.y = this.context.canvas.height - 200;
   }
 
   createAnimations() {

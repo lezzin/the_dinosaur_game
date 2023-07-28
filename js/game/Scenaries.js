@@ -18,13 +18,7 @@ export default class Scenaries {
 
         this.clouds = [
             new Cloud(this.context, img("cloud1.png", "scenaries")),
-            new Cloud(this.context, img("cloud1.png", "scenaries")),
-            new Cloud(this.context, img("cloud1.png", "scenaries")),
             new Cloud(this.context, img("cloud2.png", "scenaries")),
-            new Cloud(this.context, img("cloud2.png", "scenaries")),
-            new Cloud(this.context, img("cloud2.png", "scenaries")),
-            new Cloud(this.context, img("cloud3.png", "scenaries")),
-            new Cloud(this.context, img("cloud3.png", "scenaries")),
             new Cloud(this.context, img("cloud3.png", "scenaries")),
         ].sort((firstCloud, secondCloud) => firstCloud.defaultWidth - secondCloud.defaultWidth);
     }
@@ -36,13 +30,13 @@ export default class Scenaries {
 
     #drawGround() {
         this.context.fillStyle = colors.ground;
-        this.context.fillRect(0, this.context.canvas.height - 25.5, this.context.canvas.width, 26);
+        this.context.fillRect(0, this.context.canvas.height - 63, this.context.canvas.width, 63);
 
         this.context.strokeStyle = colors.darkGround;
         this.context.lineWidth = 3;
         this.context.beginPath();
-        this.context.moveTo(0, this.context.canvas.height - 25.5);
-        this.context.lineTo(this.context.canvas.width, this.context.canvas.height - 25.5);
+        this.context.moveTo(0, this.context.canvas.height - 64);
+        this.context.lineTo(this.context.canvas.width, this.context.canvas.height - 64);
         this.context.stroke();
     }
 
@@ -67,9 +61,9 @@ class Cloud {
     constructor(context, image) {
         this.context = context;
 
-        this.x = Math.floor(Math.random() * 1000) + context.canvas.width;
-        this.y = Math.floor(Math.random() * 250);
-        this.width = Math.floor(Math.random() * 400) + 100;
+        this.x = Math.floor(Math.random() * 800) + context.canvas.width;
+        this.y = (this.context.canvas.height / 3) + Math.floor(Math.random() * 5);
+        this.width = Math.floor(Math.random() * 300);
         this.height = this.width / 2 + 30;
 
         this.defaultWidth = this.width;

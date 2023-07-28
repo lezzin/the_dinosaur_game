@@ -19,6 +19,8 @@ const GAME_SCREENS = {
     scoreboard: "scoreboardScreen",
 };
 
+const DEFAULT_SCREEN = GAME_SCREENS.menu;
+
 const SCREENS_MESSAGES = {
     menu: {
         title: "Press Enter to start",
@@ -45,8 +47,6 @@ const SCREENS_MESSAGES = {
     lifes: (lifes) => lifes.join(""),
     record: "Good job! You've just broken the record! 🎉🎉🎉",
 };
-
-const DEFAULT_SCREEN = GAME_SCREENS.menu;
 
 export {
     OBSTACLES_VELOCITIES,
