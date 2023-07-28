@@ -4,7 +4,6 @@ import { DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
 import colors from "./colors.js";
 import sounds from "./sounds.js";
 
-
 import Player from "./Player.js";
 import Scenaries from "./Scenaries.js";
 import Obstacles from "./Obstacle.js";
@@ -26,7 +25,6 @@ export default class UI {
         this.obstacles = new Obstacles(context);
 
         sounds.config();
-        sounds.backgroundSFX.play();
 
         this.#enableEventListeners();
         this.#setLifes();

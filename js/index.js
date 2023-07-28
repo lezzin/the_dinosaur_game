@@ -1,6 +1,8 @@
 import UI from "./game/UI.js";
 import myModal from './utils/modal.js';
 import myLoader from './utils/loader.js';
+import { GAME_SCREENS } from "./game/constants.js";
+import sounds from "./game/sounds.js";
 
 const canvas = document.querySelector("#canvas");
 const context = canvas.getContext("2d");
@@ -17,6 +19,8 @@ function game() {
 }
 
 addEventListener("load", () => {
+  sounds.backgroundSFX.play();
+
   myModal.open();
 
   setTimeout(() => { myLoader.close(); }, 500);
