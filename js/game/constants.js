@@ -13,22 +13,23 @@ const CLOUD_VELOCITIES = {
 
 const GAME_SCREENS = {
     menu: "menuScreen",
-    game: "gameScreen",
+    running: "gameScreen",
     gameOver: "gameOverScreen",
     win: "winScreen",
     scoreboard: "scoreboardScreen",
+    commands: "commandsScreen",
 };
 
 const DEFAULT_SCREEN = GAME_SCREENS.menu;
 
 const SCREENS_MESSAGES = {
     menu: {
-        title: "Press Enter to start",
+        button: "Start the game",
         subtitle: "Press C to open the commands",
     },
     gameOver: {
         title: "Game Over!",
-        subtitle: "Press Enter to restart",
+        button: "Restart the game",
         paragraph: "Press C to open the commands",
     },
     win: {
@@ -48,6 +49,14 @@ const SCREENS_MESSAGES = {
     record: "Good job! You've just broken the record! 🎉🎉🎉",
 };
 
+const SCREEN_TITLES = {
+    menu: "Main menu",
+    running: "The Dinosaur Game",
+    win: "Main menu",
+    scoreboard: "Scoreboard",
+    commands: "Scoreboard",
+};
+
 export {
     OBSTACLES_VELOCITIES,
     OBSTACLE_IMAGE,
@@ -55,4 +64,5 @@ export {
     GAME_SCREENS,
     DEFAULT_SCREEN,
     SCREENS_MESSAGES,
+    SCREEN_TITLES
 };

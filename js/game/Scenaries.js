@@ -1,4 +1,4 @@
-import { img } from "../utils/functions.js";
+import { img } from "../functions.js";
 import colors from "./colors.js";
 import { CLOUD_VELOCITIES } from "./constants.js";
 

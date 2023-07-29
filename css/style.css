@@ -1,9 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
 :root {
     --font-color: #ddd;
     --bg-color: #111;
-    --border-color: #ddd;
+    --border-color: #333;
     --sky: linear-gradient(360deg, #4fbef1 0%, #1e6485 100%);
 }
 
@@ -11,7 +9,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
+    font-family: sans-serif;
 }
 
 body {
@@ -40,94 +38,4 @@ main::after {
     background-color: rgb(0 0 0 / 0.25);
     width: 100%;
     height: 100%;
-}
-
-.absolute {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--bg-color);
-    text-align: center;
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-}
-
-.modal,
-.loader {
-    justify-content: center;
-    align-items: center;
-}
-
-.modal {
-    display: none;
-    flex-direction: column;
-    padding: 20px;
-    z-index: 95;
-}
-
-.loader {
-    display: flex;
-    pointer-events: none;
-    z-index: 99;
-    width: 100%;
-    height: 100%;
-    transition: opacity .3s ease;
-}
-
-.loader .img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-.img img {
-    width: 20%;
-    padding-left: 50px;
-}
-
-.modal.active {
-    display: flex;
-}
-
-.loader.inactive {
-    opacity: 0;
-}
-
-.table-container {
-    width: 100%;
-    max-width: 500px;
-    height: 100%;
-    max-height: 500px;
-    background-color: var(--bg-color);
-    border: var(--border);
-    margin-bottom: 20px;
-}
-
-.modal table {
-    width: 100%;
-    height: 100%;
-    color: var(--font-color);
-    border-collapse: collapse;
-    padding: 10px;
-}
-
-.modal table td {
-    border: 1px solid var(--font-color);
-    padding: 5px 10px;
-}
-
-kbd {
-    background-color: var(--font-color);
-    color: #000;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.title {
-    font-size: 2rem;
-    font-weight: 700;
 }

@@ -1,43 +1,28 @@
-import UI from "./game/UI.js";
-import myModal from './utils/modal.js';
-import myLoader from './utils/loader.js';
-import { GAME_SCREENS } from "./game/constants.js";
+import Game from "./game/Game.js";
 import sounds from "./game/sounds.js";
 
-const canvas = document.querySelector("#canvas");
-const context = canvas.getContext("2d");
-
-canvas.width = 480;
-canvas.height = 480;
-
-const frames = 110;
-const ui = new UI(context);
-
-function game() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  ui.draw();
-}
-
 addEventListener("load", () => {
-  sounds.backgroundSFX.play();
+  const canvas = document.querySelector("#canvas");
+  const context = canvas.getContext("2d");
 
-  myModal.open();
+  canvas.width = 480;
+  canvas.height = 480;
 
-  setTimeout(() => { myLoader.close(); }, 500);
+  const frames = 60;
+  const game = new Game(context);
 
-  setInterval(game, 1000 / frames);
+  function runGame() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    game.draw();
+  }
 
-  document.addEventListener("keypress", e => {
-    const keyPressedIsCAndGameIsNotRunning = e.key === "c" && ui.currentScreen !== GAME_SCREENS.game;
-    keyPressedIsCAndGameIsNotRunning && myModal.toggle();
+  document.addEventListener("click", () => {
+    sounds.backgroundSFX.play();
   });
 
-  document.addEventListener("click", e => {
-    const modalIsActive = e.target.classList.contains("active");
-    modalIsActive && myModal.close();
-  });
+  setInterval(runGame, 1000 / frames);
 
   document.addEventListener("visibilitychange", () => {
-    document.title = (document.hidden) ? "Come back, please!" : "The Dinosaur Game";
+    document.title = document.hidden ? "Come back, please!" : "The Dinosaur Game";
   });
 });

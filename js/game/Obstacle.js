@@ -1,4 +1,4 @@
-import { writeTextOnCanvas } from "../utils/functions.js";
+import { writeTextOnCanvas } from "../functions.js";
 import { OBSTACLES_VELOCITIES, OBSTACLE_IMAGE } from "./constants.js";
 
 export default class Obstacles {

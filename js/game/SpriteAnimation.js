@@ -1,4 +1,4 @@
-import { img } from "../utils/functions.js";
+import { img } from "../functions.js";
 
 export default class SpriteAnimation {
   images = [];

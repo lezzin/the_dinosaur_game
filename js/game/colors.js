@@ -1,11 +1,11 @@
 const colors = {
     ground: "#1aa12c",
-    darkGround: "#000",
+    darkGround: "#111",
 
     dangerFont: "#c03939",
     successFont: "#2ebb71",
     normalFont: "#ffffff",
-    black: "#000",
+    black: "#111",
 
     menuBackground: "#4fbef1",
     scoreboardBackground: "#4fbef1",
