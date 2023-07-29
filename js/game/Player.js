@@ -22,7 +22,7 @@ export default class Player {
 
   draw(isDead) {
     this.#setState();
-    isDead && (this.state = PlayerStates.dead);
+    
 
     const animation = this.animations.find(animation => animation.isFor(this.state));
     const image = animation.getImage();
@@ -114,7 +114,7 @@ export default class Player {
       Space: () => this.jumpPressed = true,
     }
 
-    keydownEvents[event.code] && keydownEvents[event.code]();
+    
   };
 
   keyup = (event) => {
@@ -127,6 +127,6 @@ export default class Player {
       Space: () => this.jumpPressed = false,
     }
 
-    keypressEvents[event.code] && keypressEvents[event.code]();
+    
   };
 }
