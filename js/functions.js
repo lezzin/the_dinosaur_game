@@ -35,8 +35,8 @@ export function drawBackgroundOnCanvas(context, color, isGradient = false) {
   context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 }
 
-export function drawButtonOnCanvas(context, clickHandler, options) {
-  const { font, text, bgColor, color, borderColor, x, y, width, height, align, borderRadius } = options;
+export function drawButtonOnCanvas(context, clickHandler, options, endHandler) {
+  const { font, text, bgColor, color, borderColor, x, y, width, height, align, borderRadius, mobile } = options;
   const radius = borderRadius ?? 5;
 
   // only border
@@ -71,17 +71,43 @@ export function drawButtonOnCanvas(context, clickHandler, options) {
   const path = new Path2D();
   path.rect(x, y, width, height);
 
-  function check(event) {
-    const rect = context.canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
+  if (mobile) {
+    function start(event) {
+      const rect = context.canvas.getBoundingClientRect();
+      const touchX = event.touches[0].clientX - rect.left;
+      const touchY = event.touches[0].clientY - rect.top;
 
-    if (context.isPointInPath(path, mouseX, mouseY)) {
-      clickHandler();
-      document.removeEventListener('click', check);
+      if (context.isPointInPath(path, touchX, touchY)) {
+        clickHandler();
+        document.removeEventListener('touchstart', start);
+      }
     }
+
+    function end(event) {
+      const rect = context.canvas.getBoundingClientRect();
+      const touchX = event.changedTouches[0].clientX - rect.left;
+      const touchY = event.changedTouches[0].clientY - rect.top;
+
+      if (context.isPointInPath(path, touchX, touchY)) {
+        endHandler();
+        document.removeEventListener('touchend', end);
+      }
+    }
+
+    document.addEventListener('touchstart', start);
+    document.addEventListener('touchend', end);
+  } else {
+    function check(event) {
+      const rect = context.canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      if (context.isPointInPath(path, mouseX, mouseY)) {
+        clickHandler();
+        document.removeEventListener('click', check);
+      }
+    }
+
+    document.addEventListener('click', check);
   }
-
-  document.addEventListener('click', check);
 }
-

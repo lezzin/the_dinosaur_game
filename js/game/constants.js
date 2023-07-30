@@ -50,11 +50,11 @@ const SCREENS_MESSAGES = {
 };
 
 const SCREEN_TITLES = {
-    menu: "Main menu",
-    running: "The Dinosaur Game",
-    win: "Main menu",
-    scoreboard: "Scoreboard",
-    commands: "Scoreboard",
+    menuScreen: "Main menu",
+    gameScreen: "Game",
+    winScreen: "New record!",
+    scoreboardScreen: "Scoreboard",
+    commandsScreen: "Commands",
 };
 
 export {

@@ -1,5 +1,5 @@
 import { writeTextOnCanvas, drawBackgroundOnCanvas, drawButtonOnCanvas } from "../functions.js";
-import { DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
+import { SCREEN_TITLES, DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
 
 import colors from "./colors.js";
 import sounds from "./sounds.js";
@@ -7,6 +7,7 @@ import sounds from "./sounds.js";
 import Player from "./Player.js";
 import Scenaries from "./Scenaries.js";
 import Obstacles from "./Obstacle.js";
+import Controls from "./Controls.js";
 
 export default class Game {
     currentScreen = DEFAULT_SCREEN;
@@ -14,23 +15,27 @@ export default class Game {
     lifes = [];
     score = 0;
 
-    constructor(context) {
-        this.context = context;
+    constructor(gameContext, mobileContext) {
+        this.context = gameContext;
 
-        this.width = context.canvas.width;
-        this.height = context.canvas.height;
+        this.width = gameContext.canvas.width;
+        this.height = gameContext.canvas.height;
 
-        this.player = new Player(context);
-        this.scenaries = new Scenaries(context);
-        this.obstacles = new Obstacles(context);
+        this.player = new Player(gameContext);
+        this.scenaries = new Scenaries(gameContext);
+        this.obstacles = new Obstacles(gameContext);
+
+        this.gameControls = new Controls(mobileContext, this.player);
 
         sounds.config();
+        this.gameControls.resize();
 
         this.#enableEventListeners();
         this.#setLifes();
     }
 
     #enableEventListeners() {
+        addEventListener("resize", () => this.gameControls.resize());
         document.addEventListener("keypress", this.#keypress);
         document.addEventListener("keydown", this.player.keydown);
         document.addEventListener("keyup", this.player.keyup);
@@ -79,6 +84,8 @@ export default class Game {
     }
 
     drawGameScreen() {
+        this.gameControls.isShowing && this.gameControls.draw();
+
         let isScoreBiggerThanNine = this.score > 9;
         let isHighestScoreBiggerThanNine = this.#getHighestScore() > 9;
         let scorePaddingRight = isScoreBiggerThanNine ? 10 : 0;
@@ -199,7 +206,7 @@ export default class Game {
             { font: "34px Arial Black", color: colors.successFont, border: true },
         );
 
-        if (scores.length === 0)
+        if (scores.length <= 0)
             return writeTextOnCanvas(
                 this.context,
                 SCREENS_MESSAGES.scoreboard.noScores,
@@ -353,7 +360,7 @@ export default class Game {
         this.#removeOneLifeFromThePlayer();
 
         if (this.lifes.length > 0) {
-            this.currentScreen = GAME_SCREENS.running;
+            this.changeScreen(GAME_SCREENS.running);
 
             this.player.reset();
             this.obstacles.reset();
@@ -362,7 +369,7 @@ export default class Game {
         }
 
         this.player.resetDeadAnimation();
-        this.currentScreen = GAME_SCREENS.gameOver;
+        this.changeScreen(GAME_SCREENS.gameOver);
     }
 
     #resetAll() {
@@ -409,11 +416,13 @@ export default class Game {
                 break;
 
             case "s":
-                this.toggleScreen(GAME_SCREENS.scoreboard, GAME_SCREENS.menu);
+                if (this.currentScreen !== GAME_SCREENS.running)
+                    this.toggleScreen(GAME_SCREENS.scoreboard, GAME_SCREENS.menu);
                 break;
 
             case "c":
-                this.toggleScreen(GAME_SCREENS.commands, GAME_SCREENS.menu);
+                if (this.currentScreen !== GAME_SCREENS.running)
+                    this.toggleScreen(GAME_SCREENS.commands, GAME_SCREENS.menu);
                 break;
 
             default:
