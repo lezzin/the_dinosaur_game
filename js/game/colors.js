@@ -7,8 +7,8 @@ const colors = {
     normalFont: "#ffffff",
     black: "#111",
 
-    menuBackground: "#4fbef1",
-    scoreboardBackground: "#4fbef1",
+    screenBackground: "#4fbef1",
+
     gameBackground: {
         start: "#122e3b",
         end: "#111",

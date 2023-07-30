@@ -1,35 +1,30 @@
 import { writeTextOnCanvas, drawBackgroundOnCanvas, drawButtonOnCanvas } from "../functions.js";
 import { SCREEN_TITLES, DEFAULT_SCREEN, SCREENS_MESSAGES, GAME_SCREENS } from "./constants.js";
-
 import colors from "./colors.js";
 import sounds from "./sounds.js";
-
 import Player from "./Player.js";
 import Scenaries from "./Scenaries.js";
 import Obstacles from "./Obstacle.js";
 import Controls from "./Controls.js";
 
 export default class Game {
-    currentScreen = DEFAULT_SCREEN;
-    numLifes = 4;
-    lifes = [];
-    score = 0;
-
     constructor(gameContext, mobileContext) {
         this.context = gameContext;
-
+        this.mobileContext = mobileContext;
         this.width = gameContext.canvas.width;
         this.height = gameContext.canvas.height;
+        this.currentScreen = DEFAULT_SCREEN;
+        this.numLifes = 4;
+        this.lifes = [];
+        this.score = 0;
 
         this.player = new Player(gameContext);
         this.scenaries = new Scenaries(gameContext);
         this.obstacles = new Obstacles(gameContext);
-
         this.gameControls = new Controls(mobileContext, this.player);
 
         sounds.config();
         this.gameControls.resize();
-
         this.#enableEventListeners();
         this.#setLifes();
     }
@@ -55,7 +50,7 @@ export default class Game {
     }
 
     drawMenuScreen() {
-        drawBackgroundOnCanvas(this.context, colors.menuBackground);
+        drawBackgroundOnCanvas(this.context, colors.screenBackground);
 
         writeTextOnCanvas(
             this.context,
@@ -63,9 +58,10 @@ export default class Game {
             { x: this.width / 2, y: this.height / 2 },
             { font: "34px Arial Black", border: true }
         );
+
         drawButtonOnCanvas(
             this.context,
-            () => { this.changeScreen(GAME_SCREENS.running) },
+            () => this.changeScreen(GAME_SCREENS.running),
             {
                 text: SCREENS_MESSAGES.menu.button,
                 color: colors.successFont,
@@ -75,21 +71,23 @@ export default class Game {
                 height: 40
             }
         );
+
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.menu.subtitle,
             { x: this.width / 2, y: this.height - 30 }
         );
-
     }
 
     drawGameScreen() {
-        this.gameControls.isShowing && this.gameControls.draw();
+        if (this.gameControls.isShowing) {
+            this.gameControls.draw();
+        }
 
-        let isScoreBiggerThanNine = this.score > 9;
-        let isHighestScoreBiggerThanNine = this.#getHighestScore() > 9;
-        let scorePaddingRight = isScoreBiggerThanNine ? 10 : 0;
-        let highestScorePaddingRight = isHighestScoreBiggerThanNine ? 10 : 0;
+        const isScoreBiggerThanNine = this.score > 9;
+        const isHighestScoreBiggerThanNine = this.#getHighestScore() > 9;
+        const scorePaddingRight = isScoreBiggerThanNine ? 10 : 0;
+        const highestScorePaddingRight = isHighestScoreBiggerThanNine ? 10 : 0;
 
         drawBackgroundOnCanvas(this.context, colors.gameBackground, true);
 
@@ -105,43 +103,44 @@ export default class Game {
             this.context,
             SCREENS_MESSAGES.lifes(this.lifes),
             { x: 10, y: 30 },
-            { font: "18px Arial", align: "left" },
+            { font: "18px Arial", align: "left" }
         );
 
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.highest(this.#getHighestScore()),
             { x: this.width - 143 - highestScorePaddingRight, y: 30 },
-            { font: "18px Arial", align: "left" },
+            { font: "18px Arial", align: "left" }
         );
 
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.score(this.score),
             { x: this.width - 80 - scorePaddingRight, y: 60 },
-            { font: "18px Arial", align: "left" },
+            { font: "18px Arial", align: "left" }
         );
 
         this.#checkScore();
-        this.#checkIfCanUpdateHighestScore();
         this.#checkCollisionWithObstacle();
     }
 
     drawGameOverScreen() {
-        let scoreIsBiggerThanHighestScore = this.score > this.#getHighestScore();
-        let scoreText = scoreIsBiggerThanHighestScore ? SCREENS_MESSAGES.record : SCREENS_MESSAGES.score(this.score);
+        const scoreIsRecord = this.score >= this.#getHighestScore();
 
         drawBackgroundOnCanvas(this.context, colors.gameOverBackground);
+
+        this.player.draw(true);
 
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.gameOver.title,
             { x: this.width / 2, y: this.height / 2 - 40 },
-            { color: colors.normalFont, font: "34px Arial Black" },
+            { color: colors.normalFont, font: "34px Arial Black" }
         );
+
         drawButtonOnCanvas(
             this.context,
-            () => { this.changeScreen(GAME_SCREENS.running) },
+            () => this.changeScreen(GAME_SCREENS.running),
             {
                 text: SCREENS_MESSAGES.gameOver.button,
                 color: colors.normalFont,
@@ -152,97 +151,79 @@ export default class Game {
                 height: 40
             }
         );
+
         writeTextOnCanvas(
             this.context,
-            scoreText,
+            SCREENS_MESSAGES.score(this.score),
             { x: this.width / 2, y: this.height / 2 + 50 }
         );
+
+        if (scoreIsRecord) {
+            writeTextOnCanvas(
+                this.context,
+                SCREENS_MESSAGES.record,
+                { x: this.width / 2, y: this.height / 2 + 80 }
+            );
+        }
+
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.gameOver.paragraph,
             { x: this.width / 2, y: this.height - 30 }
         );
-
-        this.#saveScore();
-        this.player.draw(true);
-    }
-
-    drawWinScreen() {
-        writeTextOnCanvas(
-            this.context,
-            SCREENS_MESSAGES.win.title,
-            { x: this.width / 2, y: this.height / 2 },
-            { color: colors.successFont, font: "34px Arial Black", border: true },
-        );
-        writeTextOnCanvas(
-            this.context,
-            `${SCREENS_MESSAGES.score(this.score)} 🎉`,
-            { x: this.width / 2, y: this.height / 2 + 30 },
-            { color: colors.dangerFont, font: "18px Arial Black" },
-        );
-        writeTextOnCanvas(
-            this.context,
-            SCREENS_MESSAGES.win.subtitle,
-            { x: this.width / 2, y: this.height / 2 + 60 },
-            { font: "18px Arial" },
-        );
-        writeTextOnCanvas(
-            this.context,
-            SCREENS_MESSAGES.win.paragraph,
-            { x: this.width / 2, y: this.height / 2 + 120 }
-        );
     }
 
     drawScoreBoardScreen() {
-        drawBackgroundOnCanvas(this.context, colors.black);
+        drawBackgroundOnCanvas(this.context, colors.screenBackground);
 
         const scores = this.#getScores();
-        const sortedScoresByTheBiggest = scores.sort((a, b) => b.score - a.score);
+        const sortedScoresByTheBiggest = scores.slice().sort((a, b) => b.score - a.score);
 
         writeTextOnCanvas(
             this.context,
             SCREENS_MESSAGES.scoreboard.title,
             { x: this.width / 2, y: 50 },
-            { font: "34px Arial Black", color: colors.successFont, border: true },
+            { font: "34px Arial Black", color: colors.successFont, border: true }
         );
 
-        if (scores.length <= 0)
-            return writeTextOnCanvas(
+        if (scores.length === 0) {
+            writeTextOnCanvas(
                 this.context,
                 SCREENS_MESSAGES.scoreboard.noScores,
                 { x: this.width / 2, y: this.height / 2 },
                 { color: colors.dangerFont }
             );
+        } else {
+            const renderScore = (context, text, x, y, isFirst) => {
+                const color = isFirst ? colors.dangerFont : colors.normalFont;
+                const font = isFirst ? "17px Arial Black" : "16px Arial";
+                writeTextOnCanvas(context, text, { x, y }, { color, font });
+            };
 
-        sortedScoresByTheBiggest.forEach((score, index) => {
-            const isFirst = index === 0,
-                isLessThanFive = index < 5,
-                color = isFirst ? colors.dangerFont : colors.normalFont,
-                font = isFirst ? "17px Arial Black" : "16px Arial";
+            sortedScoresByTheBiggest.slice(0, 5).forEach((score, index) => {
+                const x = this.width / 2;
+                const y = this.height / 2 - 60 + index * 30;
+                const isFirst = index === 0;
 
-            isLessThanFive && writeTextOnCanvas(
+                renderScore(this.context, SCREENS_MESSAGES.scoreboard.score(index, score), x, y, isFirst);
+            });
+
+            writeTextOnCanvas(
                 this.context,
-                SCREENS_MESSAGES.scoreboard.score(index, score),
-                { x: this.width / 2, y: this.height / 2 - 60 + index * 30 },
-                { color, font },
+                SCREENS_MESSAGES.scoreboard.paragraph,
+                { x: this.width / 2, y: this.height - 30 }
             );
-        });
-
-        writeTextOnCanvas(
-            this.context,
-            SCREENS_MESSAGES.scoreboard.paragraph,
-            { x: this.width / 2, y: this.height / 2 + 200 },
-        );
+        }
     }
 
     drawCommandsScreen() {
-        drawBackgroundOnCanvas(this.context, colors.black);
+        drawBackgroundOnCanvas(this.context, colors.screenBackground);
 
         writeTextOnCanvas(
             this.context,
             "Commands",
             { x: this.width / 2, y: 50 },
-            { font: "34px Arial Black", color: colors.successFont, border: true },
+            { font: "34px Arial Black", color: colors.successFont, border: true }
         );
 
         const tableX = 20;
@@ -276,7 +257,7 @@ export default class Game {
                     this.context,
                     cellText,
                     { x: cellX + cellWidth / 6, y: cellY + cellHeight / 2 },
-                    { font: "12px Arial Black", color: colors.normalFont, border: true, align: "left" },
+                    { font: "12px Arial Black", color: colors.normalFont, align: "left" },
                 );
             }
         }
@@ -301,15 +282,15 @@ export default class Game {
     }
 
     #checkCloudsMovements() {
-        this.scenaries.cloudCanMoveLeft = (this.player.rightPressed) ? true : false;
-        this.scenaries.cloudCanMoveRight = (this.player.leftPressed) ? true : false;
-        this.scenaries.playerIsRunning = (this.player.runPressed) ? true : false;
+        this.scenaries.cloudCanMoveLeft = this.player.rightPressed;
+        this.scenaries.cloudCanMoveRight = this.player.leftPressed;
+        this.scenaries.playerIsRunning = this.player.runPressed;
     }
 
     #checkObstacleMovement() {
-        this.obstacles.canMoveLeft = (this.player.rightPressed) ? true : false;
-        this.obstacles.canMoveRight = (this.player.leftPressed) ? true : false;
-        this.obstacles.playerIsRunning = (this.player.runPressed) ? true : false;
+        this.obstacles.canMoveLeft = this.player.rightPressed;
+        this.obstacles.canMoveRight = this.player.leftPressed;
+        this.obstacles.playerIsRunning = this.player.runPressed;
     }
 
     #setDifficulty(selectedDifficulty) {
@@ -319,7 +300,7 @@ export default class Game {
             "easy": 4,
             "medium": 3,
             "hard": 2,
-        }
+        };
 
         this.numLifes = lifesPerDifficulty[selectedDifficulty];
         this.#setLifes();
@@ -350,14 +331,15 @@ export default class Game {
     }
 
     #setLifes() {
-        this.lifes = [];
-        for (let i = 0; i < this.numLifes; i++) this.lifes.push('❤️');
-        this.defaultLifes = this.lifes;
+        this.lifes = Array(this.numLifes).fill('❤️');
+        this.defaultLifes = [...this.lifes];
     }
 
     #resetTheStage() {
         sounds.hitSFX.play();
         this.#removeOneLifeFromThePlayer();
+        this.#checkIfCanUpdateHighestScore();
+        this.#saveScore();
 
         if (this.lifes.length > 0) {
             this.changeScreen(GAME_SCREENS.running);
@@ -382,18 +364,18 @@ export default class Game {
     #getScores = () => JSON.parse(localStorage.getItem("scores")) || [];
 
     #getHighestScore = () => {
-        const highestScore = localStorage.getItem("highestScore");
-        return highestScore ? highestScore : 0;
+        const highestScore = localStorage.getItem("highestScore") || 0;
+        return highestScore;
     };
 
     #saveScore() {
         const scores = this.#getScores();
         const scoreAlreadyExists = scores.find((score) => score.score === this.score);
-        if (scoreAlreadyExists) return;
-
-        const currentTime = new Date().toLocaleString();
-        scores.push({ score: this.score, date: currentTime });
-        localStorage.setItem("scores", JSON.stringify(scores));
+        if (!scoreAlreadyExists) {
+            const currentTime = new Date().toLocaleString();
+            scores.push({ score: this.score, date: currentTime });
+            localStorage.setItem("scores", JSON.stringify(scores));
+        }
     }
 
     #deleteScores() {
@@ -406,23 +388,30 @@ export default class Game {
     }
 
     #setGameScreen(keyPressed) {
-        this.#resetAll();
+        if (this.currentScreen === GAME_SCREENS.running) return;
 
+        this.#resetAll();
         switch (keyPressed) {
             case "enter":
                 if (this.currentScreen === GAME_SCREENS.gameOver || this.currentScreen === GAME_SCREENS.menu) {
                     this.changeScreen(GAME_SCREENS.running);
                 }
+
+                if (this.currentScreen === GAME_SCREENS.scoreboard || this.currentScreen === GAME_SCREENS.commands) {
+                    this.changeScreen(GAME_SCREENS.menu);
+                }
                 break;
 
             case "s":
-                if (this.currentScreen !== GAME_SCREENS.running)
+                if (this.currentScreen !== GAME_SCREENS.running) {
                     this.toggleScreen(GAME_SCREENS.scoreboard, GAME_SCREENS.menu);
+                }
                 break;
 
             case "c":
-                if (this.currentScreen !== GAME_SCREENS.running)
+                if (this.currentScreen !== GAME_SCREENS.running) {
                     this.toggleScreen(GAME_SCREENS.commands, GAME_SCREENS.menu);
+                }
                 break;
 
             default:
@@ -453,6 +442,6 @@ export default class Game {
             Digit3: () => this.#setDifficulty("hard"),
         };
 
-        events[event.code] && events[event.code]();
+        events[event.code]?.();
     }
 }

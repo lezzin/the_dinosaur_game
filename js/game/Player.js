@@ -65,7 +65,7 @@ export default class Player {
     const playerIsRunning = this.runPressed && this.rightPressed && this.state !== PlayerStates.dead;
 
     if (arrowRightIsPressed || arrowLeftPressed) {
-      sounds.stepsSFX.playbackRate = playerIsRunning ? 1.5 : 0.5;
+      sounds.stepsSFX.playbackRate = playerIsRunning ? 1.3 : 0.45;
       sounds.stepsSFX.play();
     }
 
@@ -114,7 +114,7 @@ export default class Player {
       Space: () => this.jumpPressed = true,
     }
 
-    keydownEvents[event.code] && keydownEvents[event.code]();
+    keydownEvents[event.code]?.();
   };
 
   keyup = (event) => {
@@ -127,6 +127,6 @@ export default class Player {
       Space: () => this.jumpPressed = false,
     }
 
-    keypressEvents[event.code] && keypressEvents[event.code]();
+    keypressEvents[event.code]?.();
   };
 }

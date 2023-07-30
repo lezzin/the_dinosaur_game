@@ -15,7 +15,6 @@ const GAME_SCREENS = {
     menu: "menuScreen",
     running: "gameScreen",
     gameOver: "gameOverScreen",
-    win: "winScreen",
     scoreboard: "scoreboardScreen",
     commands: "commandsScreen",
 };
@@ -32,27 +31,21 @@ const SCREENS_MESSAGES = {
         button: "Restart the game",
         paragraph: "Press C to open the commands",
     },
-    win: {
-        title: "You Win!",
-        subtitle: "Press Enter to play again",
-        paragraph: "Press C to open the commands",
-    },
     scoreboard: {
         title: "Scoreboard",
         paragraph: "Press Enter to go back to menu",
-        noScores: "No scores here... 😢",
-        score: (index, score) => `${index + 1}. Score: ${score.score} & Date: ${score.date}`,
+        noScores: "No scores here...",
+        score: (index, score) => `${index + 1}. Score: ${score.score} | Date: ${score.date}`,
     },
     score: (score) => `Score: ${score}`,
     highest: (highest) => `Highest score: ${highest}`,
     lifes: (lifes) => lifes.join(""),
-    record: "Good job! You've just broken the record! 🎉🎉🎉",
+    record: "Good job! You've just broken the record! 🎉",
 };
 
 const SCREEN_TITLES = {
     menuScreen: "Main menu",
     gameScreen: "Game",
-    winScreen: "New record!",
     scoreboardScreen: "Scoreboard",
     commandsScreen: "Commands",
 };

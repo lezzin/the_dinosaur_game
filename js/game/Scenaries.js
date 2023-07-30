@@ -9,26 +9,24 @@ export default class Scenaries {
 
     constructor(context) {
         this.context = context;
-
         this.x = 0;
         this.y = 0;
-
         this.width = context.canvas.width;
         this.height = context.canvas.height;
 
         this.clouds = [
-            new Cloud(this.context, img("cloud1.png", "scenaries")),
-            new Cloud(this.context, img("cloud2.png", "scenaries")),
-            new Cloud(this.context, img("cloud3.png", "scenaries")),
+            new Cloud(this.context, "cloud1.png"),
+            new Cloud(this.context, "cloud2.png"),
+            new Cloud(this.context, "cloud3.png"),
         ].sort((firstCloud, secondCloud) => firstCloud.defaultWidth - secondCloud.defaultWidth);
     }
 
     draw() {
-        this.#drawGround();
-        this.#drawClouds();
+        this.drawGround();
+        this.drawClouds();
     }
 
-    #drawGround() {
+    drawGround() {
         this.context.fillStyle = colors.ground;
         this.context.fillRect(0, this.context.canvas.height - 63, this.context.canvas.width, 63);
 
@@ -40,16 +38,15 @@ export default class Scenaries {
         this.context.stroke();
     }
 
-    #drawClouds() {
+    drawClouds() {
         for (const cloud of this.clouds) {
             cloud.draw();
 
-            this.cloudCanMoveRight && cloud.moveRight();
-            this.cloudCanMoveLeft && cloud.moveLeft(this.playerIsRunning);
+            if (this.cloudCanMoveRight) cloud.moveRight();
+            if (this.cloudCanMoveLeft) cloud.moveLeft(this.playerIsRunning);
 
-            const cloudPassedCanvasRightBorder = cloud.x + cloud.width < 0;
-            cloudPassedCanvasRightBorder && cloud.reset();
-        };
+            if (cloud.outOfBounds()) cloud.reset();
+        }
     }
 
     reset() {
@@ -58,7 +55,7 @@ export default class Scenaries {
 }
 
 class Cloud {
-    constructor(context, image) {
+    constructor(context, imageName) {
         this.context = context;
 
         this.x = Math.floor(Math.random() * 800) + context.canvas.width;
@@ -69,14 +66,14 @@ class Cloud {
         this.defaultWidth = this.width;
         this.defaultHeight = this.height;
 
-        this.image = image;
+        this.image = img(imageName, "scenaries");
     }
 
     draw() {
         this.context.drawImage(this.image, this.x, this.y, this.width, this.height);
         this.move();
 
-        (this.x + this.width < 0) && this.reset();
+        if (this.x + this.width < 0) this.reset();
     }
 
     move() {
@@ -86,10 +83,9 @@ class Cloud {
     moveLeft(playerIsRunning) {
         if (playerIsRunning) {
             this.x -= CLOUD_VELOCITIES.running(this.width);
-            return;
+        } else {
+            this.x -= CLOUD_VELOCITIES.normal(this.width);
         }
-
-        this.x -= CLOUD_VELOCITIES.normal(this.width);
     }
 
     moveRight() {
@@ -99,5 +95,9 @@ class Cloud {
     reset() {
         this.x = Math.floor(Math.random() * 1000) + this.context.canvas.width;
         this.y = Math.floor(Math.random() * 250);
+    }
+
+    outOfBounds() {
+        return this.x + this.width < 0;
     }
 }

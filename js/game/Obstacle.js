@@ -8,15 +8,7 @@ export default class Obstacles {
 
     constructor(context) {
         this.context = context;
-
-        this.obstacles = [
-            new Obstacle(context),
-            new Obstacle(context),
-            new Obstacle(context),
-            new Obstacle(context),
-            new Obstacle(context),
-        ];
-
+        this.obstacles = Array.from({ length: 5 }, () => new Obstacle(context));
         this.setVelocity();
     }
 
@@ -24,21 +16,23 @@ export default class Obstacles {
         for (const obstacle of this.obstacles) {
             obstacle.draw();
 
-            this.canMoveLeft && obstacle.moveLeft(this.playerIsRunning);
-            this.canMoveRight && obstacle.moveRight();
+            if (this.canMoveLeft) obstacle.moveLeft(this.playerIsRunning);
+            if (this.canMoveRight) obstacle.moveRight();
 
-            obstacle.outOfBounds() && obstacle.reset();
+            if (obstacle.outOfBounds()) obstacle.reset();
         }
     }
 
     setVelocity(selectedDifficulty = "easy") {
-        for (const obstacle of this.obstacles)
+        for (const obstacle of this.obstacles) {
             obstacle.setVelocity(selectedDifficulty);
+        }
     }
 
     reset() {
-        for (const obstacle of this.obstacles)
+        for (const obstacle of this.obstacles) {
             obstacle.reset();
+        }
     }
 }
 
@@ -50,9 +44,8 @@ class Obstacle {
 
     constructor(context) {
         this.context = context;
-
         this.x = this.context.canvas.width;
-        this.y = (this.context.canvas.height / 2) + 166;
+        this.y = this.context.canvas.height / 2 + 166;
     }
 
     setVelocity(selectedDifficulty) {
@@ -63,8 +56,8 @@ class Obstacle {
         writeTextOnCanvas(
             this.context,
             OBSTACLE_IMAGE,
-            { x: this.x, y: this.y, },
-            { font: "50px Arial" },
+            { x: this.x, y: this.y },
+            { font: "50px Arial" }
         );
     }
 
@@ -78,7 +71,6 @@ class Obstacle {
 
     reset() {
         let randomNumber = Math.floor(Math.random() * 8000);
-
         this.x = this.context.canvas.width + randomNumber;
         this.passed = false;
     }
