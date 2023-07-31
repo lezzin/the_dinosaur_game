@@ -1,4 +1,4 @@
-import { drawBackgroundOnCanvas, drawButtonOnCanvas } from "../functions.js";
+import { drawButtonOnCanvas } from "../functions.js";
 import colors from "./colors.js";
 
 export default class Controls {
@@ -15,13 +15,8 @@ export default class Controls {
     resize() {
         const mobileResolution = 768;
 
+        (innerWidth < mobileResolution) ? this.show() : this.hide();
         this.isShowing = this.context.canvas.style.display == "block";
-
-        if (innerWidth < mobileResolution) {
-            this.show();
-        } else {
-            this.hide();
-        }
     }
 
     show() {

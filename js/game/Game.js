@@ -24,12 +24,13 @@ export default class Game {
         this.gameControls = new Controls(mobileContext, this.player);
 
         sounds.config();
-        this.gameControls.resize();
         this.#enableEventListeners();
         this.#setLifes();
     }
 
     #enableEventListeners() {
+        this.gameControls.resize();
+
         addEventListener("resize", () => this.gameControls.resize());
         document.addEventListener("keypress", this.#keypress);
         document.addEventListener("keydown", this.player.keydown);
@@ -80,9 +81,7 @@ export default class Game {
     }
 
     drawGameScreen() {
-        if (this.gameControls.isShowing) {
-            this.gameControls.draw();
-        }
+        if (this.gameControls.isShowing) this.gameControls.draw();
 
         const isScoreBiggerThanNine = this.score > 9;
         const isHighestScoreBiggerThanNine = this.#getHighestScore() > 9;
