@@ -1,4 +1,4 @@
-# The Dinosaur Game
+![Foto do projeto](https://github.com/lezzin/the_dinosaur_game/assets/103830032/51875bf9-6b62-4a5c-8634-63894b75d140)
 
 Jogo criado utilizando HTML Canvas e Javascript puro com POO (Programação Orientada a Objetos).
 Para rodar esse projeto, é necessário que você o utilize em um servidor: podendo ser o XAMPP ou a extensão Live Server no VSCode.
