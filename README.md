@@ -6,8 +6,6 @@ Para rodar esse projeto, é necessário que você o utilize em um servidor: pode
     <img src="https://img.shields.io/badge/Javascript-000?style=for-the-badge&logo=javascript&logoColor=yellow"  alt="Javascript Logo" align="center" />
 </div><br>
 
-![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=lezzin&repo=Jogo-em-JS-com-canvas&theme=dark&show_owner=true)
-
 ## Créditos:
 
 [Clique aqui](https://www.youtube.com/watch?v=yTlmOpW6kOc) para acessar o video em que retirei o código das animações do personagem (dinossauro).
