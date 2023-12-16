@@ -1,10 +1,22 @@
 ![Foto do projeto](https://github.com/lezzin/the_dinosaur_game/assets/103830032/51875bf9-6b62-4a5c-8634-63894b75d140)
 
 Jogo criado utilizando HTML Canvas e Javascript puro com POO (Programação Orientada a Objetos).
-Para rodar esse projeto, é necessário que você o utilize em um servidor: podendo ser o XAMPP ou a extensão Live Server no VSCode.
-<div style="display: inline_block">
-    <img src="https://img.shields.io/badge/Javascript-000?style=for-the-badge&logo=javascript&logoColor=yellow"  alt="Javascript Logo" align="center" />
-</div><br>
+
+## Começando
+
+Localmente:<br>
+Para usar o aplicativo, é necessário a utilização de algum servidor, como o XAMPP ou o Live Server (Extensão VSCODE). 
+* Caso utilize o XAMPP, adicione a pasta do projeto, inicie o servidor e acesse o arquivo `index.html` em um navegador da web. <br>
+* Caso utilize a extensão Live Server, abra o VSCode e clique em Go Live no canto inferior esquerdo da tela.
+
+Hospedagem:<br>
+Basta acessar o link: [clique aqui para acessar](https://dinosaurgame.vercel.app/)
+
+## Tecnologias utilizadas:
+
+* HTML
+* CSS
+* JavaScript
 
 ## Créditos:
 
@@ -19,3 +31,9 @@ Para rodar esse projeto, é necessário que você o utilize em um servidor: pode
 #### Imagens:
 - [Imagens das nuvens](https://opengameart.org/content/2d-clouds-pack)
 - [Sprites do dinossauro](https://www.gameart2d.com/free-dino-sprites.html)
+
+### 🔗 Minhas redes sociais para contato
+
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/leandroadrian_/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/leandro-adrian)
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/LeandroAdrian)
