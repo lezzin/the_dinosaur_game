@@ -34,7 +34,8 @@ Basta acessar o link: [clique aqui para acessar](https://dinosaurgame.vercel.app
 - [Imagens das nuvens](https://opengameart.org/content/2d-clouds-pack)
 - [Sprites do dinossauro](https://www.gameart2d.com/free-dino-sprites.html)
 
-## Minhas redes sociais para contato
+## Contato
+Você pode me encontrar nas seguintes redes sociais:
 
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/leandroadrian_/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/leandro-adrian)
